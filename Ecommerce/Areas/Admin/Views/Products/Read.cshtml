@@ -1,0 +1,153 @@
+﻿@using E_Commerce.Models
+@using X.PagedList.Mvc.Core
+@using E_Commerce.Models
+@model X.PagedList.IPagedList<ItemProduct>
+
+@{
+    Layout = "~/Areas/Admin/Views/_Shared/_Layout.cshtml";
+}
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+    public List<RowCategory> GetCategories(int ProductId)
+    {
+        List<RowCategory> listCategories =
+            (from product in db.Products
+             join category_product in db.CategoriesProducts
+                on product.Id equals category_product.ProductId
+             join category in db.Categories
+                on category_product.CategoryId equals category.Id
+             where product.Id == ProductId
+             select category).ToList();
+
+        return listCategories != null ? listCategories : new List<RowCategory>();
+    }
+}
+
+
+<div class="col-md-12">
+
+    <div class="mb-3">
+        <a href="/Admin/Products/Create" class="btn btn-dark">
+            <i class="fas fa-plus"></i> Add Products
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white fw-bold">
+            List Products
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:100px;">Image</th>
+                            <th>Title</th>
+                            <th style="width:200px;">Category</th>
+                            <th style="width:120px;" class="text-center">Hot Products</th>
+                            <th style="width:100px;" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var row in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(row.Photo))
+                                    {
+                                        <img src="~/Upload/Products/@row.Photo"
+                                             class="img-fluid rounded"
+                                             style="max-height: 90px; object-fit: cover;" />
+                                    }
+                                </td>
+
+                                <td>@row.Name</td>
+
+                                <td>
+                                    @{
+                                        var list_categories = GetCategories(row.Id);
+                                    }
+                                    @foreach (var item in list_categories)
+                                    {
+                                        <span class="badge bg-secondary mb-1">@item.Name</span>
+                                
+                                        <br />
+                                    }
+                                </td>
+
+                                <td class="text-center">
+                                    @if (row.Hot == 1)
+                                    {
+                                        <i class="fas fa-check-circle text-success fs-4"></i>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+                                    <a href="/Admin/Products/Update/@row.Id?page=@ViewBag.Page" class="text-primary me-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/Admin/Products/Delete/@row.Id"
+                                       class="text-danger"
+                                       onclick="return confirm('Are you sure?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <style>
+                .pagination-container {
+                    text-align: center;
+                    margin: 20px 0;
+                }
+
+                .pagination {
+                    display: inline-block;
+                    padding: 0;
+                    margin: 0;
+                    list-style: none;
+                }
+
+                    .pagination li {
+                        display: inline-block;
+                        margin: 0 2px;
+                    }
+
+                        .pagination li a,
+                        .pagination li span {
+                            display: block;
+                            padding: 8px 14px;
+                            border: 1px solid #ddd;
+                            border-radius: 6px;
+                            background: #fff;
+                            color: #555;
+                            text-decoration: none;
+                            min-width: 40px;
+                            text-align: center;
+                        }
+
+                            .pagination li a:hover {
+                                background: #000;
+                                color: #fff;
+                                border-color: #000;
+                            }
+
+                        .pagination li.active span {
+                            background: #000;
+                            color: #fff;
+                            border-color: #000;
+                        }
+            </style>
+
+            <div class="mt-3">
+                @Html.PagedListPager(Model, page => Url.Action("Read", new { page = page }))
+            </div>
+        </div>
+    </div>
+</div>

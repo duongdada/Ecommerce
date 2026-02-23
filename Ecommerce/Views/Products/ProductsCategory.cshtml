@@ -1,0 +1,83 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+
+@using E_Commerce.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<ItemProduct>
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    public RowCategory GetCategoryName(int CategoryId)
+    {
+        return (db.Categories.Where(item => item.Id == CategoryId).FirstOrDefault());
+    }
+}
+
+<!-- Products Grid -->
+<div class="col-12 col-lg-9">
+    <!-- Shop Header -->
+    <div class="shop-header">
+        <p class="shop-result">Showing <strong>@Model.FirstItemOnPage-@Model.LastItemOnPage</strong> of <strong>@Model.TotalItemCount</strong> results</p>
+        <div class="shop-controls">
+            <select class="shop-select" onchange="location.href = '/Products/Category/@ViewBag.CategoryId?order='+this.value;">
+                <option value="0">Default sorting</option>
+                <option value="priceAsc">Price: Low to High</option>
+                <option value="priceDesc">Price: High to Low</option>
+                <option value="nameAsc">Name: A-Z</option>
+                <option value="nameDesc">Name: Z-A</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="row g-4" id="productsGrid">
+        @foreach (var row in Model)
+        {
+            <!-- Product Card -->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="product-card">
+                    <div class="product-card-img-wrapper">
+                        <a href="/Products/Detail/@row.Id">
+                            <img src="~/Upload/Products/@row.Photo" alt="@row.Name" class="product-card-img">
+                        </a>
+                        @if (row.Discount > 0)
+                        {
+                            <span class="product-card-badge">Sale</span>
+                        }
+                        else
+                        {
+                            <span class="product-card-badge">New</span>
+                        }
+                    </div>
+                    <div class="product-card-body">
+                        <div class="product-card-category">@GetCategoryName(ViewBag.CategoryId).Name</div>
+                        <h5 class="product-card-title"><a href="/Products/Detail/@row.Id">@row.Name</a></h5>
+                        <div class="product-card-price">
+                            @if (row.Discount > 0)
+                            {
+                                @string.Format("{0:N0} ₫", row.Price - (row.Price * row.Discount) / 100)
+                                <span class="product-card-price-old">@string.Format("{0:N0} ₫", row.Price)</span>
+                            }
+                            else
+                            {
+                                @string.Format("{0:N0} ₫", row.Price)
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    <div class="row">
+        <div class="col-12 text-center" style="margin-top: 50px; margin-bottom: 50px;">
+            @Html.PagedListPager(
+            Model,
+            page => Url.Action("Category", new { id = ViewBag.CategoryId, page = page, order = ViewBag.Order })
+                        )
+        </div>
+    </div>
+</div>

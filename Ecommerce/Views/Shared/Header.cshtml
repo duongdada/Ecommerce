@@ -1,0 +1,335 @@
+﻿@using E_Commerce.Models
+@using Newtonsoft.Json
+@functions {
+    public MyDbContext db = new MyDbContext();
+    // Liệt kê danh mục cấp cha
+    public List<RowCategory> GetCategories()
+    {
+        List<RowCategory> rows = db.Categories.Where(item => item.ParentId == 0).OrderByDescending(item => item.Id).ToList();
+        return rows ?? new List<RowCategory>();
+    }
+    // Liệt kê danh mục cấp con
+    public List<RowCategory> GetSubCategories(int CategoryId)
+    {
+        List<RowCategory> rows = db.Categories.Where(item => item.ParentId == CategoryId).OrderByDescending(item => item.Id).ToList();
+        return rows ?? new List<RowCategory>();
+    }
+}
+
+<header class="header">
+    <div class="container">
+        <div class="row align-items-center">
+
+            <div class="col-3 col-lg-2">
+                <!-- Mobile Menu Toggle -->
+                <button class="header-toggle d-lg-none" onclick="toggleNavbarMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Logo -->
+                <div class="header-logo d-none d-lg-block">
+                    <a href="/Home">
+                        <span class="logo-text">ELEGANCE</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-8">
+                <!-- Logo Mobile -->
+                <div class="header-logo d-lg-none text-center">
+                    <a href="/Home">
+                        <span class="logo-text">ELEGANCE</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Desktop -->
+                <nav class="header-nav d-none d-lg-block">
+                    <ul class="nav-list d-flex justify-content-lg-center">
+                        <li class="nav-item"><a href="/Home" class="nav-link">Trang chủ</a></li>
+                        <li class="nav-item"><a href="/About" class="nav-link">Về chúng tôi</a></li>
+
+                        <!-- Dropdown sản phẩm -->
+                        <li class="nav-item has-submenu">
+                            <a href="/Products/Collection" class="nav-link">
+                                Bộ sưu tập <i class="fas fa-chevron-down"></i>
+                            </a>
+                            <ul class="submenu">
+                                @{
+                                    var rows = GetCategories();
+                                }
+                                @foreach (var row in rows)
+                                {
+                                    <li>
+                                        <a href="/Products/Category/@row.Id">@row.Name</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+
+                        <li class="nav-item"><a href="/News" class="nav-link">Tin tức</a></li>
+                        <li class="nav-item"><a href="/Contact" class="nav-link">Liên hệ</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="col-3 col-lg-2">
+                <!-- Header Actions -->
+                <div class="header-actions">
+
+                    <!-- Search ICON (Desktop only) -->
+                    <div class="header-search d-none d-lg-block">
+                        <button class="action-btn search-toggle" type="button" onclick="toggleSearch()">
+                            <i class="fas fa-search"></i>
+                        </button>
+
+                        <!-- Search Dropdown (Desktop) - CẬP NHẬT ACTION -->
+                        <div class="search-container" id="searchContainer">
+                            <form class="search-form" action="/Search/SearchName" method="get">
+                                <i class="fas fa-search search-icon-inside"></i>
+                                <input type="text"
+                                       name="keyword"
+                                       class="search-input"
+                                       placeholder="Tìm kiếm sản phẩm..."
+                                       autocomplete="off">
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- USER ICON -->
+                    <div class="header-user">
+                        @if (!String.IsNullOrEmpty(Context.Session.GetString("customer_user_email")))
+                        {
+                            <!-- Đã đăng nhập -->
+                            <a href="javascript:void(0)" class="action-btn" onclick="toggleMiniUser()">
+                                <i class="fas fa-user"></i>
+                            </a>
+
+                            <!-- MINI USER -->
+                            <div class="mini-user" id="miniUser">
+                                <div class="mini-user-header">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>Tài khoản</span>
+                                </div>
+
+                                <ul class="mini-user-list">
+                                    <li>
+                                        <a href="/Account/Profile">
+                                            <i class="fas fa-user-cog"></i>
+                                            <span>Thông tin tài khoản</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/Order">
+                                            <i class="fas fa-box"></i>
+                                            <span>Chi tiết đơn hàng</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <div class="mini-user-footer">
+                                    <a href="/Account/Logout" class="btn-logout">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Đăng xuất
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Chưa đăng nhập -->
+                            <a href="/Account/Login" class="action-btn">
+                                <i class="fas fa-user"></i>
+                            </a>
+                        }
+                    </div>
+
+                    <!-- CART ICON -->
+                    <div class="header-cart">
+                        <a href="javascript:void(0)" class="action-btn" onclick="toggleMiniCart()">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span class="cart-count">@Cart.CartQuantity(Context.Session)</span>
+                        </a>
+
+                        <!-- MINI CART -->
+                        <div class="mini-cart" id="miniCart">
+                            @if (!String.IsNullOrEmpty(Context.Session.GetString("cart"))
+                                                        && Cart.CartQuantity(Context.Session) > 0)
+                            {
+                                <!-- Có sản phẩm -->
+                                <div class="mini-cart-header">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    <span>Giỏ hàng (@Cart.CartQuantity(Context.Session))</span>
+                                </div>
+
+                                <ul class="mini-cart-list">
+                                    @{
+                                        string json_cart = Context.Session.GetString("cart");
+                                        List<Item> cart = new List<Item>();
+
+                                        if (!String.IsNullOrEmpty(json_cart))
+                                        {
+                                            cart = JsonConvert.DeserializeObject<List<Item>>(json_cart);
+                                        }
+                                    }
+
+                                    @foreach (var itemProduct in cart)
+                                    {
+                                        <li class="mini-cart-item">
+                                            <img src="~/Upload/Products/@itemProduct.ProductRecord.Photo"
+                                                 alt="@itemProduct.ProductRecord.Name" />
+
+                                            <div class="mini-cart-info">
+                                                <h4>
+                                                    <a href="/Products/Detail/@itemProduct.ProductRecord.Id">
+                                                        @itemProduct.ProductRecord.Name
+                                                    </a>
+                                                </h4>
+                                                <span class="mini-cart-price">
+                                                    @itemProduct.Quantity ×
+                                                    @string.Format("{0:N0} ₫",
+                                                    itemProduct.ProductRecord.Price -
+                                                    (itemProduct.ProductRecord.Price * itemProduct.ProductRecord.Discount) / 100)
+                                        </span>
+                                    </div>
+
+                                    <a href="/Cart/Remove/@itemProduct.ProductRecord.Id"
+                                       class="mini-cart-remove"
+                                       onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </li>
+                                                                }
+                                </ul>
+
+                                <div class="mini-cart-footer">
+                                    <div class="mini-cart-total">
+                                        <span>Tổng tiền:</span>
+                                        <strong>@string.Format("{0:N0} ₫", Cart.CartTotal(Context.Session))</strong>
+                                    </div>
+                                    <div class="mini-cart-actions">
+                                        <a href="/Cart" class="btn-view-cart">Xem giỏ hàng</a>
+                                        <a href="/Cart/Checkout" class="btn-checkout">Thanh toán</a>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Không có sản phẩm -->
+                                <div class="mini-cart-empty">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    <p>Giỏ hàng trống</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Search Box Mobile (Full width, xuống dòng) - CẬP NHẬT ACTION -->
+            <div class="col-12 d-lg-none">
+                <div class="header-search-mobile">
+                    <form class="search-form-mobile" action="/Search/SearchName" method="get">
+                        <i class="fas fa-search search-icon-mobile"></i>
+                        <input type="text"
+                               name="keyword"
+                               class="search-input-mobile"
+                               placeholder="Tìm kiếm sản phẩm..."
+                               autocomplete="off">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="header-mobile-menu d-lg-none" id="mobileMenu">
+        <ul class="mobile-nav-list">
+            <li><a href="/Home">Trang chủ</a></li>
+            <li><a href="/Products">Sản phẩm</a></li>
+            <li><a href="/News">Tin tức</a></li>
+            <li><a href="/Contact">Liên hệ</a></li>
+        </ul>
+    </div>
+</header>
+
+<script>
+    function toggleNavbarMenu() {
+        document.getElementById("mobileMenu").classList.toggle("active");
+    }
+
+    function toggleMiniCart() {
+        const miniCart = document.getElementById("miniCart");
+        const miniUser = document.getElementById("miniUser");
+        const searchContainer = document.getElementById("searchContainer");
+
+        miniCart.classList.toggle("active");
+
+        // Đóng các dropdown khác
+        if (miniUser) miniUser.classList.remove("active");
+        if (searchContainer) searchContainer.classList.remove("active");
+    }
+
+    function toggleMiniUser() {
+        const miniUser = document.getElementById("miniUser");
+        const miniCart = document.getElementById("miniCart");
+        const searchContainer = document.getElementById("searchContainer");
+
+        miniUser.classList.toggle("active");
+
+        // Đóng các dropdown khác
+        if (miniCart) miniCart.classList.remove("active");
+        if (searchContainer) searchContainer.classList.remove("active");
+    }
+
+    function toggleSearch() {
+        const searchContainer = document.getElementById("searchContainer");
+        const miniCart = document.getElementById("miniCart");
+        const miniUser = document.getElementById("miniUser");
+        const searchInput = searchContainer.querySelector(".search-input");
+
+        searchContainer.classList.toggle("active");
+
+        // Đóng các dropdown khác
+        if (miniCart) miniCart.classList.remove("active");
+        if (miniUser) miniUser.classList.remove("active");
+
+        // Focus vào input khi mở
+        if (searchContainer.classList.contains("active")) {
+            setTimeout(() => searchInput.focus(), 100);
+        }
+    }
+
+    // Đóng khi click bên ngoài
+    document.addEventListener('click', function(e) {
+        const miniCart = document.getElementById("miniCart");
+        const miniUser = document.getElementById("miniUser");
+        const searchContainer = document.getElementById("searchContainer");
+
+        const headerCart = document.querySelector(".header-cart");
+        const headerUser = document.querySelector(".header-user");
+        const headerSearch = document.querySelector(".header-search");
+
+        // Đóng mini cart
+        if (miniCart && miniCart.classList.contains("active")) {
+            if (!headerCart.contains(e.target)) {
+                miniCart.classList.remove("active");
+            }
+        }
+
+        // Đóng mini user
+        if (miniUser && miniUser.classList.contains("active")) {
+            if (!headerUser.contains(e.target)) {
+                miniUser.classList.remove("active");
+            }
+        }
+
+        // Đóng search (chỉ desktop)
+        if (searchContainer && searchContainer.classList.contains("active")) {
+            if (headerSearch && !headerSearch.contains(e.target)) {
+                searchContainer.classList.remove("active");
+            }
+        }
+    });
+</script>

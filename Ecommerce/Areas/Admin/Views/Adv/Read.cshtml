@@ -1,0 +1,137 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/_Shared/_Layout.cshtml";
+}
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using System.IO
+@using E_Commerce.Models
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+}
+
+<div class="col-md-12">
+    <div class="mb-3">
+        <a href="/Admin/Adv/Create" class="btn btn-dark">
+            <i class="fas fa-plus"></i> Add Advertisement
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white fw-bold">
+            List Advertisement
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:100px;">Photo</th>
+                            <th>Name</th>
+                            <th style="width:250px;">Position</th>
+                            <th style="width:100px;" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (item.Photo != null && File.Exists(Directory.GetCurrentDirectory() + "\\wwwroot\\Upload\\Adv\\" + item.Photo))
+                                    {
+                                        <img src="~/Upload/Adv/@item.Photo"
+                                             class="img-fluid rounded"
+                                             style="max-height: 90px; object-fit: cover;" />
+                                    }
+                                </td>
+
+                                <td>@item.Name</td>
+
+                                <td>
+                                    @if (item.Position == 1)
+                                    {
+                                        <span class="badge bg-primary">Trang chủ (Dưới header)</span>
+                                    }
+                                    @if (item.Position == 2)
+                                    {
+                                        <span class="badge bg-info">Trang chủ (Dưới sản phẩm nổi bật)</span>
+                                    }
+                                    @if (item.Position == 3)
+                                    {
+                                        <span class="badge bg-success">Trang chủ (Trên tin tức nổi bật)</span>
+                                    }
+                                    @if (item.Position == 4)
+                                    {
+                                        <span class="badge bg-warning text-dark">Trang chủ (Trên footer)</span>
+                                    }
+                                  
+                                </td>
+
+                                <td class="text-center">
+                                    <a href="/Admin/Adv/Update/@item.Id" class="text-primary me-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/Admin/Adv/Delete/@item.Id"
+                                       class="text-danger"
+                                       onclick="return window.confirm('Are you sure?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <style>
+                .pagination-container {
+                    text-align: center;
+                    margin: 20px 0;
+                }
+
+                .pagination {
+                    display: inline-block;
+                    padding: 0;
+                    margin: 0;
+                    list-style: none;
+                }
+
+                    .pagination li {
+                        display: inline-block;
+                        margin: 0 2px;
+                    }
+
+                        .pagination li a,
+                        .pagination li span {
+                            display: block;
+                            padding: 8px 14px;
+                            border: 1px solid #ddd;
+                            border-radius: 6px;
+                            background: #fff;
+                            color: #555;
+                            text-decoration: none;
+                            min-width: 40px;
+                            text-align: center;
+                        }
+
+                            .pagination li a:hover {
+                                background: #000;
+                                color: #fff;
+                                border-color: #000;
+                            }
+
+                        .pagination li.active span {
+                            background: #000;
+                            color: #fff;
+                            border-color: #000;
+                        }
+            </style>
+
+            <div class="mt-3">
+                @Html.PagedListPager((IPagedList)Model, p => Url.Action("Index", new { page = p }))
+            </div>
+        </div>
+    </div>
+</div>

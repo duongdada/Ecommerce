@@ -1,0 +1,385 @@
+.product-detail {
+    padding: 40px 0 80px;
+}
+
+.product-images {
+    position: sticky;
+    top: 100px;
+}
+
+.product-main-img {
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+}
+
+.product-main-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-thumbnails {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.thumbnail {
+    height: 120px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.thumbnail.active {
+    border-color: #000;
+}
+
+.thumbnail:hover {
+    border-color: #000;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: 0 0 0 40px;
+}
+
+.product-name {
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: #000;
+    margin-bottom: 15px;
+}
+
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.product-rating i {
+    color: #000;
+    font-size: 14px;
+}
+
+.product-reviews {
+    font-size: 13px;
+    color: #000;
+    margin-left: 10px;
+}
+
+.product-price {
+    font-size: 28px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.product-description {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #000;
+    margin-bottom: 30px;
+}
+
+.product-option {
+    margin-bottom: 25px;
+}
+
+.option-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #000;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.size-options {
+    display: flex;
+    gap: 10px;
+}
+
+.size-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ededed;
+    background-color: #fff;
+    color: #000;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.size-btn:hover,
+.size-btn.active {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.color-options {
+    display: flex;
+    gap: 10px;
+}
+
+.color-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.color-btn:hover,
+.color-btn.active {
+    border-color: #000;
+}
+
+.quantity-selector {
+    display: flex;
+    border: 1px solid #ededed;
+    width: fit-content;
+}
+
+.qty-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-color: #fff;
+    color: #000;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.qty-btn:hover {
+    background-color: #fafafa;
+}
+
+.qty-input {
+    width: 60px;
+    height: 40px;
+    border: none;
+    border-left: 1px solid #ededed;
+    border-right: 1px solid #ededed;
+    text-align: center;
+    font-size: 14px;
+    outline: none;
+}
+
+.product-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.add-to-cart-btn {
+    flex: 1;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+    opacity: 0.8;
+}
+
+.wishlist-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ededed;
+    background-color: #fff;
+    color: #000;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn:hover {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.product-meta {
+    border-top: 1px solid #ededed;
+    padding-top: 25px;
+}
+
+.product-meta p {
+    font-size: 13px;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.product-meta a {
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid #000;
+    transition: opacity 0.3s ease;
+}
+
+.product-meta a:hover {
+    opacity: 0.6;
+}
+
+.product-tabs {
+    margin-top: 80px;
+    border-top: 1px solid #ededed;
+    padding-top: 40px;
+}
+
+.tabs-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 40px;
+    border-bottom: 1px solid #ededed;
+    margin-bottom: 40px;
+}
+
+.tab-item {
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #000;
+    padding-bottom: 15px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-item:hover,
+.tab-item.active {
+    opacity: 1;
+    border-bottom-color: #000;
+}
+
+.tabs-content {
+    padding: 20px 0;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.tab-pane h3 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.tab-pane p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #000;
+    margin-bottom: 15px;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table tr {
+    border-bottom: 1px solid #ededed;
+}
+
+.info-table td {
+    padding: 15px 0;
+    font-size: 14px;
+    color: #000;
+}
+
+.info-table td:first-child {
+    font-weight: 600;
+    width: 200px;
+}
+
+.related-products {
+    margin-top: 80px;
+    padding-top: 80px;
+    border-top: 1px solid #ededed;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .product-info {
+        padding: 40px 0 0 0;
+    }
+
+    .product-images {
+        position: static;
+    }
+
+    .product-main-img {
+        height: 500px;
+    }
+
+    .thumbnail {
+        height: 100px;
+    }
+}
+
+@media (max-width: 575px) {
+    .product-main-img {
+        height: 400px;
+    }
+
+    .product-thumbnails {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .thumbnail {
+        height: 80px;
+    }
+
+    .product-name {
+        font-size: 24px;
+    }
+
+    .product-price {
+        font-size: 22px;
+    }
+
+    .tabs-nav {
+        gap: 20px;
+        overflow-x: auto;
+    }
+
+    .tab-item {
+        white-space: nowrap;
+    }
+
+    .info-table td:first-child {
+        width: 150px;
+    }
+}

@@ -1,0 +1,600 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutTrangChu.cshtml";
+}
+@using E_Commerce.Models
+@model List<Item>
+
+<div class="template-checkout">
+    <div class="container">
+        <div class="checkout-header">
+            <h1>Thanh Toán</h1>
+            <p>Vui lòng điền đầy đủ thông tin để hoàn tất đơn hàng</p>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+            </div>
+        }
+
+        <form method="post" action="/Cart/CheckoutPost" class="checkout-form">
+            <div class="row">
+                <!-- Thông tin khách hàng -->
+                <div class="col-lg-7">
+                    <div class="checkout-section">
+                        <h3>Thông tin giao hàng</h3>
+
+                        <div class="form-group">
+                            <label>Họ và tên <span class="required">*</span></label>
+                            <input type="text"
+                                   name="name"
+                                   class="form-control"
+                                   value="@ViewBag.Customer?.Name"
+                                   placeholder="Nhập họ tên đầy đủ"
+                                   required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email <span class="required">*</span></label>
+                                    <input type="email"
+                                           name="email"
+                                           class="form-control"
+                                           value="@ViewBag.Customer?.Email"
+                                           placeholder="example@email.com"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Số điện thoại <span class="required">*</span></label>
+                                    <input type="tel"
+                                           name="phone"
+                                           class="form-control"
+                                           value="@ViewBag.Customer?.Phone"
+                                           placeholder="0123456789"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Địa chỉ giao hàng <span class="required">*</span></label>
+                            <textarea name="address"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố"
+                                      required>@ViewBag.Customer?.Address</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Ghi chú đơn hàng (tùy chọn)</label>
+                            <textarea name="note"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn"></textarea>
+                        </div>
+
+                        <!-- ⭐ PHẦN CHỌN PHƯƠNG THỨC THANH TOÁN -->
+                        <div class="form-group payment-methods">
+                            <label>Phương thức thanh toán <span class="required">*</span></label>
+                            <div class="payment-options">
+                                <div class="payment-option">
+                                    <input type="radio"
+                                           id="payment-cod"
+                                           name="paymentMethod"
+                                           value="COD"
+                                           checked>
+                                    <label for="payment-cod">
+                                        <div class="payment-icon">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </div>
+                                        <div class="payment-info">
+                                            <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                            <span>Thanh toán bằng tiền mặt khi nhận hàng</span>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="payment-option">
+                                    <input type="radio"
+                                           id="payment-momo"
+                                           name="paymentMethod"
+                                           value="MoMo">
+                                    <label for="payment-momo">
+                                        <div class="payment-icon momo">
+                                            <i class="fas fa-wallet"></i>
+                                        </div>
+                                        <div class="payment-info">
+                                            <strong>Thanh toán qua Ví MoMo</strong>
+                                            <span>Thanh toán an toàn qua ví điện tử MoMo</span>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="payment-option">
+                                    <input type="radio"
+                                           id="payment-zalopay"
+                                           name="paymentMethod"
+                                           value="ZaloPay">
+                                    <label for="payment-zalopay">
+                                        <div class="payment-icon zalopay">
+                                            <i class="fas fa-mobile-alt"></i>
+                                        </div>
+                                        <div class="payment-info">
+                                            <strong>Thanh toán qua ZaloPay</strong>
+                                            <span>Thanh toán nhanh chóng qua ZaloPay</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tóm tắt đơn hàng -->
+                <div class="col-lg-5">
+                    <div class="checkout-summary">
+                        <h3>Đơn hàng của bạn</h3>
+
+                        <div class="summary-products">
+                            @foreach (var item in Model)
+                            {
+                                <div class="summary-item">
+                                    <div class="item-image">
+                                        <img src="~/Upload/Products/@item.ProductRecord.Photo" alt="@item.ProductRecord.Name">
+                                        <span class="item-quantity">@item.Quantity</span>
+                                    </div>
+                                    <div class="item-info">
+                                        <h4>@item.ProductRecord.Name</h4>
+                                        <p class="item-price">
+                                            @string.Format("{0:N0} ₫", (item.ProductRecord.Price - (item.ProductRecord.Price * item.ProductRecord.Discount) / 100) * item.Quantity)
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="summary-total">
+                            <div class="total-row">
+                                <span>Tạm tính:</span>
+                                <strong>@string.Format("{0:N0} ₫", Cart.CartTotal(Context.Session))</strong>
+                            </div>
+                            <div class="total-row">
+                                <span>Phí vận chuyển:</span>
+                                <strong>Miễn phí</strong>
+                            </div>
+                            <div class="total-row total-final">
+                                <span>Tổng cộng:</span>
+                                <strong class="total-amount">@string.Format("{0:N0} ₫", Cart.CartTotal(Context.Session))</strong>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-checkout-submit">
+                            <i class="fas fa-check-circle"></i>
+                            Đặt hàng
+                        </button>
+
+                        <a href="/Cart" class="btn-back-cart">
+                            <i class="fas fa-arrow-left"></i>
+                            Quay lại giỏ hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .template-checkout {
+        padding: 50px 0;
+        background: #f8f9fa;
+    }
+
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .checkout-header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .checkout-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+    .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .checkout-section {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+        .checkout-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+    .required {
+        color: #e74c3c;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+    /* ⭐ PAYMENT METHODS STYLING */
+    .payment-methods {
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .payment-options {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .payment-option {
+        position: relative;
+    }
+
+        .payment-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .payment-option label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fff;
+        }
+
+            .payment-option label:hover {
+                border-color: #000;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+        .payment-option input[type="radio"]:checked + label {
+            border-color: #000;
+            background: #f8f9fa;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
+
+            .payment-option input[type="radio"]:checked + label::before {
+                content: "";
+                position: absolute;
+                top: 18px;
+                right: 20px;
+                width: 20px;
+                height: 20px;
+                background: #000;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .payment-option input[type="radio"]:checked + label::after {
+                content: "✓";
+                position: absolute;
+                top: 18px;
+                right: 20px;
+                width: 20px;
+                height: 20px;
+                color: #fff;
+                font-size: 12px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1;
+            }
+
+    .payment-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #333;
+        flex-shrink: 0;
+    }
+
+        .payment-icon.momo {
+            background: #d82d8b;
+            color: #fff;
+        }
+
+        .payment-icon.zalopay {
+            background: #0068ff;
+            color: #fff;
+        }
+
+    .payment-info {
+        flex: 1;
+    }
+
+        .payment-info strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 5px;
+            color: #000;
+        }
+
+        .payment-info span {
+            font-size: 13px;
+            color: #666;
+        }
+
+    .checkout-summary {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 100px;
+    }
+
+        .checkout-summary h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+    .summary-products {
+        max-height: 300px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+
+    .summary-item {
+        display: flex;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+    .item-image {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+        .item-image img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #f0f0f0;
+        }
+
+    .item-quantity {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #000;
+        color: #fff;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+        .item-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+    .item-price {
+        font-size: 14px;
+        font-weight: 600;
+        color: #e74c3c;
+        margin: 0;
+    }
+
+    .summary-total {
+        padding: 20px 0;
+        border-top: 2px solid #f0f0f0;
+        border-bottom: 2px solid #f0f0f0;
+        margin: 20px 0;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+        .total-row:last-child {
+            margin-bottom: 0;
+        }
+
+    .total-final {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px dashed #ddd;
+        font-size: 18px;
+    }
+
+    .total-amount {
+        color: #e74c3c;
+        font-size: 24px;
+    }
+
+    .btn-checkout-submit {
+        width: 100%;
+        padding: 15px;
+        background: #000;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+        .btn-checkout-submit:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-checkout-submit i {
+            margin-right: 8px;
+        }
+
+    .btn-back-cart {
+        display: block;
+        text-align: center;
+        padding: 12px;
+        background: #f8f9fa;
+        color: #000;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+        .btn-back-cart:hover {
+            background: #e9ecef;
+        }
+
+        .btn-back-cart i {
+            margin-right: 5px;
+        }
+
+    @@media (max-width: 991px) {
+        .checkout-summary
+
+    {
+        position: static;
+        margin-top: 30px;
+    }
+
+    }
+
+    @@media (max-width: 575px) {
+        .checkout-header h1
+
+    {
+        font-size: 24px;
+    }
+
+    .checkout-section,
+    .checkout-summary {
+        padding: 20px;
+    }
+
+    .item-image img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .payment-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .payment-info strong {
+        font-size: 14px;
+    }
+
+    .payment-info span {
+        font-size: 12px;
+    }
+
+    }
+</style>

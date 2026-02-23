@@ -1,0 +1,103 @@
+﻿@using E_Commerce.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<RowUser>
+
+@{
+    Layout = "~/Areas/Admin/Views/_Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="mb-3">
+        <a href="/Admin/Users/Create" class="btn btn-dark">
+            <i class="fas fa-plus"></i> Add User
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white fw-bold">
+            List User
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Fullname</th>
+                            <th>Email</th>
+                            <th style="width:100px;" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var row in Model)
+                        {
+                            <tr>
+                                <td>@row.Name</td>
+                                <td>@row.Email</td>
+                                <td class="text-center">
+                                    <a href="/Admin/Users/Update/@row.Id?page=@ViewBag.Page" class="text-primary me-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/Admin/Users/Delete/@row.Id?page=@ViewBag.Page"
+                                       class="text-danger"
+                                       onclick="return confirm('Are you sure?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <style>
+                .pagination-container {
+                    text-align: center;
+                    margin: 20px 0;
+                }
+
+                .pagination {
+                    display: inline-block;
+                    padding: 0;
+                    margin: 0;
+                    list-style: none;
+                }
+
+                    .pagination li {
+                        display: inline-block;
+                        margin: 0 2px;
+                    }
+
+                        .pagination li a,
+                        .pagination li span {
+                            display: block;
+                            padding: 8px 14px;
+                            border: 1px solid #ddd;
+                            border-radius: 6px;
+                            background: #fff;
+                            color: #555;
+                            text-decoration: none;
+                            min-width: 40px;
+                            text-align: center;
+                        }
+
+                            .pagination li a:hover {
+                                background: #000;
+                                color: #fff;
+                                border-color: #000;
+                            }
+
+                        .pagination li.active span {
+                            background: #000;
+                            color: #fff;
+                            border-color: #000;
+                        }
+            </style>
+
+            <div class="mt-3">
+                @Html.PagedListPager(Model, page => Url.Action("Read", new { page = page }))
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,394 @@
+/* GENERAL --------------------------------------------------*/
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+    background: #fafafa;
+    color: #000;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* SIDEBAR --------------------------------------------------*/
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background: #fff;
+    border-right: 1px solid #ededed;
+    display: flex;
+    flex-direction: column;
+    transition: 0.3s ease;
+    z-index: 999;
+}
+
+.sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid #ededed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-logo {
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 3px;
+}
+
+.sidebar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #000;
+    cursor: pointer;
+}
+
+/* NAV items */
+.sidebar-nav {
+    padding: 20px 0;
+    flex: 1;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    font-size: 15px;
+    color: #555;
+    transition: 0.25s;
+}
+
+    .nav-item i {
+        width: 22px;
+        margin-right: 12px;
+        font-size: 18px;
+    }
+
+    .nav-item:hover {
+        background: #fafafa;
+        color: #000;
+    }
+
+    .nav-item.active {
+        background: #000;
+        color: #fff;
+    }
+
+/* Sidebar bottom */
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #ededed;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ededed;
+    background: #fafafa;
+    font-size: 15px;
+    transition: 0.25s;
+}
+
+    .logout-btn:hover {
+        background: #000;
+        color: #fff;
+    }
+
+/* MAIN CONTENT --------------------------------------------------*/
+.main-content {
+    margin-left: 260px;
+    min-height: 100vh;
+    transition: 0.3s ease;
+}
+
+/* TOPBAR --------------------------------------------------*/
+.topbar {
+    background: #fff;
+    border-bottom: 1px solid #ededed;
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 998;
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.menu-toggle {
+    display: none;
+    position: relative;
+    top: -1px;
+    font-size: 22px;
+    background: none;
+    border: none;
+    color: #000;
+}
+
+/* ICON THÔNG BÁO --------------------------------------------------*/
+.topbar-actions {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 22px;
+}
+
+.topbar-btn {
+    position: relative;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+    transition: 0.2s;
+}
+
+    .topbar-btn:hover {
+        color: #000;
+    }
+
+    .topbar-btn .badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        background: black;
+        color: white;
+        border-radius: 50%;
+        font-size: 11px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+    }
+
+/* ADMIN PROFILE --------------------------------------------------*/
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: 0.25s;
+}
+
+    .admin-profile:hover {
+        background: #fafafa;
+    }
+
+.profile-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* EMPTY CONTENT --------------------------------------------------*/
+.empty-placeholder h3 {
+    font-weight: 400;
+}
+
+.empty-placeholder p {
+    color: #777;
+}
+
+/* RESPONSIVE --------------------------------------------------*/
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+    .menu-toggle,
+    .sidebar-toggle {
+        display: inline-block;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-title {
+        font-size: 18px;
+    }
+
+    .profile-name {
+        display: none;
+    }
+}
+
+/* PAGINATION --------------------------------------------------*/
+/* CSS cho PagedList - Override Bootstrap */
+.pagination-container {
+    margin: 20px 0 !important;
+    padding: 10px 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+    .pagination-container .pagination {
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        list-style: none !important;
+        gap: 4px !important;
+    }
+
+        .pagination-container .pagination li {
+            display: inline-block !important;
+            list-style: none !important;
+        }
+
+            /* Style cho link và span trong pagination */
+            .pagination-container .pagination li a,
+            .pagination-container .pagination li span {
+                display: inline-block !important;
+                padding: 8px 14px !important;
+                margin: 0 !important;
+                border: 1px solid #ddd !important;
+                border-radius: 8px !important;
+                background: #fff !important;
+                color: #555 !important;
+                font-weight: 500 !important;
+                text-decoration: none !important;
+                transition: all 0.2s ease !important;
+                cursor: pointer !important;
+                min-width: 40px !important;
+                text-align: center !important;
+            }
+
+                /* Hover cho link */
+                .pagination-container .pagination li a:hover {
+                    background: #000 !important;
+                    color: #fff !important;
+                    border-color: #000 !important;
+                    transform: scale(1.05) !important;
+                }
+
+            /* Trang hiện tại - li.active */
+            .pagination-container .pagination li.active span {
+                background: #000 !important;
+                color: #fff !important;
+                font-weight: 600 !important;
+                border-color: #000 !important;
+            }
+
+            /* Skip buttons (prev/next) */
+            .pagination-container .pagination li.PagedList-skipToPrevious a,
+            .pagination-container .pagination li.PagedList-skipToNext a {
+                font-weight: 600 !important;
+            }
+
+            /* Disabled state */
+            .pagination-container .pagination li.disabled a,
+            .pagination-container .pagination li.disabled span {
+                color: #aaa !important;
+                background: #f5f5f5 !important;
+                border-color: #ddd !important;
+                pointer-events: none !important;
+                cursor: not-allowed !important;
+            }
+
+/* CSS bổ sung cho các element khác trong trang */
+.e-panel {
+    background: #fff;
+    border: 1px solid #ededed;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.e-panel-header {
+    padding: 16px 20px;
+    background: #fafafa;
+    border-bottom: 1px solid #ededed;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.e-panel-body {
+    padding: 20px;
+}
+
+.e-input {
+    border: 1px solid #ddd !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+}
+
+    .e-input:focus {
+        border-color: #000 !important;
+        box-shadow: 0 0 0 3px rgba(0,0,0,0.1) !important;
+        outline: none !important;
+    }
+
+.e-label {
+    font-weight: 500;
+    padding-top: 10px;
+}
+
+.e-btn {
+    padding: 10px 24px !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+}
+
+.e-table {
+    margin-top: 0 !important;
+}
+
+    .e-table th {
+        background: #fafafa;
+        font-weight: 500;
+        padding: 12px !important;
+    }
+
+    .e-table td {
+        padding: 12px !important;
+        vertical-align: middle !important;
+    }
+
+.e-action-edit {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+    .e-action-edit:hover {
+        color: #004999;
+        text-decoration: underline;
+    }
+
+.e-action-delete {
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+    .e-action-delete:hover {
+        color: #a71d2a;
+        text-decoration: underline;
+    }

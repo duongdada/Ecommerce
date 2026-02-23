@@ -1,0 +1,82 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@using E_Commerce.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<ItemProduct>
+<div class="col-12 col-lg-9">
+    <div class="shop-header">
+        <div class="shop-results">
+            <h2 class="shop-title" style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                Kết quả tìm kiếm: "@ViewBag.keyword"
+            </h2>
+            <p class="shop-result">
+                Tìm thấy <strong>@Model.TotalItemCount</strong> sản phẩm
+            </p>
+        </div>
+        <div class="shop-controls">
+            <select class="shop-select" onchange="sortProducts(this.value)">
+                <option value="newest">Mới nhất</option>
+                <option value="price-asc">Giá: Thấp đến Cao</option>
+                <option value="price-desc">Giá: Cao đến Thấp</option>
+                <option value="name-asc">Tên: A-Z</option>
+                <option value="name-desc">Tên: Z-A</option>
+            </select>
+        </div>
+    </div>
+    <div class="row g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col-6 col-sm-6 col-md-4 col-lg-4">
+                <div class="product-card">
+                    <div class="product-card-img-wrapper">
+                        <a href="/Products/Detail/@product.Id">
+                            <img src="~/Upload/Products/@product.Photo" alt="@product.Name" title="@product.Name" class="product-card-img">
+                        </a>
+                        @if (product.Hot == 1)
+                        {
+                            <span class="product-card-badge">Hot</span>
+                        }
+                        @if (product.Discount > 0)
+                        {
+                            <span class="product-card-badge" style="background-color: #e74c3c; left: auto; right: 16px;">-@product.Discount%</span>
+                        }
+                    </div>
+                    <div class="product-card-body">
+                        <h3 class="product-card-title">
+                            <a href="/Products/Detail/@product.Id" style="text-decoration: none; color: inherit;">
+                                @product.Name
+                            </a>
+                        </h3>
+                        <div class="product-card-price">
+                            @if (product.Discount > 0)
+                            {
+                                <span class="product-card-price-old">@string.Format("{0:N0} ₫", product.Price)</span>
+                                @string.Format("{0:N0} ₫", product.Price - (product.Price * product.Discount) / 100)
+                            }
+                            else
+                            {
+                                @string.Format("{0:N0} ₫", product.Price)
+                            }
+                        </div>
+                        <a href="/Cart/Buy/@product.Id" class="btn btn-dark w-100 mt-3" style="border-radius: 8px; padding: 10px;">
+                            <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (Model.PageCount > 1)
+    {
+        <div class="pagination-wrapper mt-5">
+            @Html.PagedListPager(Model, page => Url.Action("SearchName", new { page = page, keyword = ViewBag.keyword }))
+        </div>
+    }
+</div>
+<script>
+    function sortProducts(sortValue) {
+        const keyword = '@ViewBag.keyword';
+        window.location.href = `/Search/SearchName?keyword=${keyword}&sortBy=${sortValue}`;
+    }
+</script>

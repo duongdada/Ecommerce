@@ -1,0 +1,212 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/_Shared/_Layout.cshtml";
+}
+@using E_Commerce.Models
+
+@{
+    string _Name = Model != null ? Model.Name : "";
+    string _Description = Model != null ? Model.Description : "";
+    string _Content = Model != null ? Model.Content : "";
+    int _Hot = Model != null ? Model.Hot : 0;
+    string _Photo = Model != null ? Model.Photo : "";
+    double _Price = Model != null ? Model.Price : 0;
+    double _Discount = Model != null ? Model.Discount : 0;
+    int _Id = Model != null ? Model.Id : 0;
+}
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    public List<RowCategory> GetCategories()
+    {
+        return db.Categories
+                 .Where(item => item.ParentId == 0)
+                 .OrderByDescending(item => item.Id)
+                 .ToList();
+    }
+
+    public List<RowCategory> GetSubCategories(int _CategoryId)
+    {
+        return db.Categories
+                 .Where(item => item.ParentId == _CategoryId)
+                 .OrderByDescending(item => item.Id)
+                 .ToList();
+    }
+
+    public bool CheckCategory(int _ProductId, int _CategoryId)
+    {
+        var record =
+            (from c in db.Categories
+             join cp in db.CategoriesProducts on c.Id equals cp.CategoryId
+             join p in db.Products on cp.ProductId equals p.Id
+             where p.Id == _ProductId && c.Id == _CategoryId
+             select c).FirstOrDefault();
+
+        return record != null;
+    }
+}
+
+<script lang="javascript" src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<div class="col-md-12">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white fw-bold">
+            @(Model != null ? "Edit Product" : "Add Product")
+        </div>
+
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" action="@ViewBag.formAction">
+
+                <!-- Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Name</label>
+                    <div class="col-md-10">
+                        <input type="text" name="Name" value="@_Name" class="form-control" required />
+                    </div>
+                </div>
+
+                <!-- Price -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Price</label>
+                    <div class="col-md-10">
+                        <input type="number" name="Price" value="@_Price" class="form-control" style="max-width:300px;" required />
+                    </div>
+                </div>
+
+                <!-- Discount -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Discount</label>
+                    <div class="col-md-10">
+                        <input type="text" name="Discount" value="@_Discount" class="form-control" style="max-width:300px;" required />
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Categories</label>
+                    <div class="col-md-10">
+                        <select name="Categories" id="Categories" class="form-control" multiple style="width:100%;">
+                            @{
+                                var list_categories = GetCategories();
+                            }
+                            @foreach (var item in list_categories)
+                            {
+                                string selected = (Model != null && CheckCategory(Model.Id, item.Id)) ? "selected" : "";
+                                <option @selected value="@item.Id">@item.Name</option>
+
+                                var list_sub = GetSubCategories(item.Id);
+                                foreach (var sub in list_sub)
+                                {
+                                    string subSelected = (Model != null && CheckCategory(Model.Id, sub.Id)) ? "selected" : "";
+                                    <option @subSelected value="@sub.Id">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;@sub.Name
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <script>
+                            $("#Categories").select2({
+                                placeholder: "Select categories",
+                                allowClear: true
+                            });
+                        </script>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Description</label>
+                    <div class="col-md-10">
+                        <textarea name="Description" id="Description">@_Description</textarea>
+                    </div>
+                </div>
+                <script>
+                    ClassicEditor.create(document.querySelector('#Description'));
+                </script>
+
+                <!-- Content -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Content</label>
+                    <div class="col-md-10">
+                        <textarea name="Content" id="Content">@_Content</textarea>
+                    </div>
+                </div>
+                <script>
+                    ClassicEditor.create(document.querySelector('#Content'));
+                </script>
+
+                <!-- Hot -->
+                <div class="form-group row mb-3">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <div class="form-check">
+                            <input type="checkbox" name="Hot" class="form-check-input" id="hotCheck" @(_Hot == 1 ? "checked" : "") />
+                            <label class="form-check-label fw-semibold" for="hotCheck">
+                                <i class="fas fa-fire text-danger"></i> Hot Product
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Upload Image</label>
+                    <div class="col-md-10">
+                        <input type="file" name="img" class="form-control" style="max-width:400px;" />
+                        @if (!string.IsNullOrEmpty(_Photo))
+                        {
+                            <div class="mt-3">
+                                <p class="text-muted mb-2">Current image:</p>
+                                <img src="~/Upload/Products/@_Photo"
+                                     class="img-thumbnail"
+                                     style="max-height: 150px; object-fit: cover;" />
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-group row mt-4">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <button type="submit" class="btn btn-dark px-4">
+                            <i class="fas fa-save me-1"></i>
+                            @(Model != null ? "Update" : "Create")
+                        </button>
+                        <a href="/Admin/Products/Read" class="btn btn-secondary px-4 ms-2">
+                            <i class="fas fa-arrow-left me-1"></i> Back
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ck-editor__editable {
+        min-height: 200px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .form-check-input:checked {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        min-height: 38px;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--multiple {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>

@@ -1,0 +1,65 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/_Shared/_Layout.cshtml";
+}
+@{
+    string name = Model != null ? Model.Name : "";
+    string email = Model != null ? Model.Email : "";
+}
+
+<div class="col-md-12">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white fw-bold">
+            @(Model != null ? "Edit User" : "Add User")
+        </div>
+
+        <div class="card-body">
+            <form method="post" action="@ViewBag.formAction">
+                <!-- Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Name</label>
+                    <div class="col-md-10">
+                        <input type="text" value="@name" name="name" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Email</label>
+                    <div class="col-md-10">
+                        <input type="email" value="@email" name="email" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 control-label fw-semibold">Password</label>
+                    <div class="col-md-10">
+                        @{
+                            string strCheck = Model != null ?
+                            "placeholder=Không đổi password thì không nhập" : "required";
+                        }
+                        <input type="password" name="password" @strCheck class="form-control">
+                        @if (Model != null)
+                        {
+                            <small class="form-text text-muted">Để trống nếu không muốn thay đổi mật khẩu</small>
+                        }
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group row mt-4">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <button type="submit" class="btn btn-dark px-4">
+                            <i class="fas fa-save me-1"></i>
+                            @(Model != null ? "Update" : "Create")
+                        </button>
+                        <a href="/Admin/Users/Read" class="btn btn-secondary px-4 ms-2">
+                            <i class="fas fa-arrow-left me-1"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

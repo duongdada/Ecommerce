@@ -1,0 +1,535 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutTrangChu.cshtml";
+}
+@using E_Commerce.Models
+
+@{
+    ItemOrder order = ViewBag.Order;
+    List<ItemOrderDetail> orderDetails = ViewBag.OrderDetails;
+
+    string statusText = order.Status switch
+    {
+        0 => "Chờ xử lý",
+        1 => "Đang xử lý",
+        2 => "Đang giao hàng",
+        3 => "Đã giao hàng",
+        4 => "Đã hủy",
+        _ => "Không xác định"
+    };
+
+    string statusColor = order.Status switch
+    {
+        0 => "#f39c12",
+        1 => "#3498db",
+        2 => "#9b59b6",
+        3 => "#27ae60",
+        4 => "#e74c3c",
+        _ => "#95a5a6"
+    };
+}
+
+<div class="template-order-detail">
+    <div class="container">
+        <div class="order-header">
+            <a href="/Order/Track" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Tra cứu đơn khác
+            </a>
+            <h1>Chi Tiết Đơn Hàng</h1>
+        </div>
+
+        <div class="order-status-card">
+            <div class="status-icon" style="background: @statusColor">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="status-info">
+                <h2>Đơn hàng #@order.OrderCode</h2>
+                <div class="status-badge" style="background: @statusColor">
+                    @statusText
+                </div>
+                <p class="order-date">
+                    <i class="fas fa-calendar"></i>
+                    Đặt ngày: @order.Create.ToString("dd/MM/yyyy HH:mm")
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Thông tin khách hàng -->
+            <div class="col-lg-6">
+                <div class="info-card">
+                    <h3><i class="fas fa-user"></i> Thông tin khách hàng</h3>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="label">Họ tên:</span>
+                            <span class="value">@order.Name</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Email:</span>
+                            <span class="value">@order.Email</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Số điện thoại:</span>
+                            <span class="value">@order.Phone</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Địa chỉ:</span>
+                            <span class="value">@order.Address</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin đơn hàng -->
+            <div class="col-lg-6">
+                <div class="info-card">
+                    <h3><i class="fas fa-file-invoice"></i> Thông tin đơn hàng</h3>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="label">Mã đơn hàng:</span>
+                            <span class="value order-code">@order.OrderCode</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Ngày đặt:</span>
+                            <span class="value">@order.Create.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Trạng thái:</span>
+                            <span class="value">
+                                <span class="status-badge-small" style="background: @statusColor">
+                                    @statusText
+                                </span>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Tổng tiền:</span>
+                            <span class="value total-price">@string.Format("{0:N0} ₫", order.Price)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chi tiết sản phẩm -->
+        <div class="products-card">
+            <h3><i class="fas fa-shopping-bag"></i> Sản phẩm trong đơn</h3>
+            <div class="table-responsive">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-right">Đơn giá</th>
+                            <th class="text-right">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in orderDetails)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="product-name">@item.ProductName</div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="quantity-badge">@item.Quantity</span>
+                                </td>
+                                <td class="text-right">@string.Format("{0:N0} ₫", item.Price)</td>
+                                <td class="text-right">
+                                    <strong>@string.Format("{0:N0} ₫", item.Price * item.Quantity)</strong>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
+                            <td class="text-right">
+                                <strong class="total-amount">@string.Format("{0:N0} ₫", order.Price)</strong>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <div class="order-actions">
+            <a href="/Home" class="btn-continue">
+                <i class="fas fa-home"></i>
+                Về trang chủ
+            </a>
+            <a href="/Order/Track" class="btn-track-another">
+                <i class="fas fa-search"></i>
+                Tra cứu đơn khác
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .template-order-detail {
+        padding: 50px 0;
+        background: #f8f9fa;
+        min-height: calc(100vh - 200px);
+    }
+
+    .order-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+
+        .order-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+    .btn-back {
+        padding: 10px 20px;
+        background: #fff;
+        color: #000;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-back:hover {
+            border-color: #000;
+            transform: translateX(-5px);
+        }
+
+    .order-status-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .status-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+        .status-icon i {
+            font-size: 35px;
+            color: #fff;
+        }
+
+    .status-info h2 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        color: #fff;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .order-date {
+        color: #666;
+        font-size: 14px;
+        margin: 0;
+    }
+
+        .order-date i {
+            margin-right: 5px;
+        }
+
+    .info-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+        height: 100%;
+    }
+
+        .info-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+            .info-card h3 i {
+                margin-right: 8px;
+                color: #666;
+            }
+
+    .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px dashed #f0f0f0;
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-item .label {
+            font-weight: 500;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-item .value {
+            font-weight: 600;
+            color: #000;
+            font-size: 14px;
+            text-align: right;
+            max-width: 60%;
+        }
+
+    .order-code {
+        color: #27ae60 !important;
+        font-size: 16px !important;
+    }
+
+    .total-price {
+        color: #e74c3c !important;
+        font-size: 18px !important;
+    }
+
+    .status-badge-small {
+        display: inline-block;
+        padding: 5px 12px;
+        color: #fff;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .products-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
+
+        .products-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+            .products-card h3 i {
+                margin-right: 8px;
+                color: #666;
+            }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .products-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .products-table thead th {
+            background: #f8f9fa;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .products-table tbody td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        .products-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .products-table tfoot td {
+            padding: 20px 15px;
+            border-top: 2px solid #e9ecef;
+            font-size: 16px;
+        }
+
+    .product-name {
+        font-weight: 500;
+    }
+
+    .quantity-badge {
+        display: inline-block;
+        background: #f8f9fa;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-weight: 600;
+    }
+
+    .total-amount {
+        color: #e74c3c;
+        font-size: 20px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .order-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-continue,
+    .btn-track-another {
+        padding: 15px 40px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-continue {
+        background: #000;
+        color: #fff;
+        border: 2px solid #000;
+    }
+
+        .btn-continue:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+    .btn-track-another {
+        background: #fff;
+        color: #000;
+        border: 2px solid #000;
+    }
+
+        .btn-track-another:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+    @@media (max-width: 991px) {
+        .order-status-card
+
+    {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .status-info h2 {
+        font-size: 20px;
+    }
+
+    }
+
+    @@media (max-width: 767px) {
+        .template-order-detail
+
+    {
+        padding: 30px 15px;
+    }
+
+    .order-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+        .order-header h1 {
+            font-size: 22px;
+        }
+
+    .order-status-card,
+    .info-card,
+    .products-card {
+        padding: 20px;
+    }
+
+    .status-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+        .status-icon i {
+            font-size: 28px;
+        }
+
+    .info-item {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+        .info-item .value {
+            max-width: 100%;
+            text-align: left;
+        }
+
+    .products-table {
+        font-size: 12px;
+    }
+
+        .products-table thead th,
+        .products-table tbody td {
+            padding: 10px 8px;
+        }
+
+    .order-actions {
+        flex-direction: column;
+    }
+
+    .btn-continue,
+    .btn-track-another {
+        width: 100%;
+        justify-content: center;
+    }
+
+    }
+</style>

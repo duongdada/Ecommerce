@@ -1,0 +1,843 @@
+/* ============================================
+   HEADER STYLES
+   ============================================ */
+
+/* ========== HEADER CONTAINER ========== */
+.header {
+    background-color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+    .header .container {
+        padding: 15px 0;
+    }
+
+/* ========== LOGO ========== */
+.header-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .header-logo a {
+        text-decoration: none;
+    }
+
+.logo-text {
+    font-size: 24px;
+    font-weight: normal;
+    color: #000;
+    text-decoration: none;
+    letter-spacing: 2px;
+}
+
+/* ========== MOBILE TOGGLE BUTTON ========== */
+.header-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    color: #000;
+}
+
+/* ========== HEADER ACTIONS ========== */
+.header-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #000;
+    padding: 0;
+    position: relative;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+    .action-btn:hover {
+        color: #666;
+    }
+
+/* ========== DESKTOP NAVIGATION ========== */
+.header-nav {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s;
+}
+
+    .nav-link:hover {
+        color: #666;
+    }
+
+    .nav-link i {
+        font-size: 10px;
+    }
+
+/* ========== SUBMENU - DROPDOWN ========== */
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    background: #fff;
+    padding: 10px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    z-index: 999;
+    list-style: none;
+    margin: 0;
+}
+
+.nav-item.has-submenu:hover > .submenu {
+    display: block;
+}
+
+.submenu li {
+    position: relative;
+}
+
+    .submenu li a {
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #333;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+        .submenu li a:hover {
+            background: #f8f8f8;
+            color: #000;
+        }
+
+/* ========== MOBILE MENU ========== */
+.header-mobile-menu {
+    display: none;
+    background: #fff;
+    border-top: 1px solid #eee;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+    .header-mobile-menu.active {
+        display: block;
+    }
+
+.mobile-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 20px 0;
+}
+
+    .mobile-nav-list li {
+        border-bottom: 1px solid #eee;
+    }
+
+        .mobile-nav-list li:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav-list li a {
+            display: block;
+            padding: 15px 0;
+            color: #000;
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+            .mobile-nav-list li a:hover {
+                color: #666;
+            }
+
+/* ========== FIX CONFLICTS ========== */
+.header .row {
+    margin: 0 -15px;
+}
+
+.header .col-3,
+.header .col-6,
+.header .col-12,
+.header .col-lg-2,
+.header .col-lg-8 {
+    padding: 0 15px;
+}
+
+.nav-list,
+.submenu,
+.mobile-nav-list {
+    list-style: none !important;
+    margin: 0 !important;
+}
+
+    .header-logo a,
+    .nav-link,
+    .submenu li a {
+        text-decoration: none !important;
+    }
+
+
+/* ============================================
+   SEARCH STYLES
+   ============================================ */
+
+/* ========== DESKTOP SEARCH (992px+) ========== */
+.header-search {
+    position: relative;
+}
+
+.search-toggle {
+    /* ?ã có style t? .action-btn */
+}
+
+.search-container {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 15px);
+    width: 350px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    z-index: 999;
+}
+
+    .search-container.active {
+        display: block;
+    }
+
+.search-form {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    gap: 10px;
+}
+
+.search-icon-inside {
+    font-size: 16px;
+    color: #999;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #000;
+}
+
+    .search-input::placeholder {
+        color: #999;
+    }
+
+/* ========== MOBILE SEARCH (below 992px) ========== */
+.header-search-mobile {
+    margin-top: 15px;
+}
+
+.search-form-mobile {
+    display: flex;
+    align-items: center;
+    background: #f5f5f5;
+    border-radius: 25px;
+    padding: 10px 18px;
+    gap: 10px;
+}
+
+.search-icon-mobile {
+    font-size: 16px;
+    color: #999;
+}
+
+.search-input-mobile {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #000;
+}
+
+    .search-input-mobile::placeholder {
+        color: #999;
+    }
+
+
+/* ============================================
+   MINI CART & MINI USER - MATCHING UI
+   ============================================ */
+
+/* ========== CONTAINER ========== */
+.header-cart,
+.header-user {
+    position: relative;
+}
+
+/* ========== CART COUNT BADGE ========== */
+.cart-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* ========== MINI CART & MINI USER PANEL ========== */
+.mini-cart,
+.mini-user {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + 15px);
+    width: 320px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    z-index: 999;
+}
+
+    .mini-cart.active,
+    .mini-user.active {
+        display: block;
+    }
+
+/* ========== HEADER ========== */
+.mini-cart-header,
+.mini-user-header {
+    padding: 15px 18px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+    .mini-cart-header i,
+    .mini-user-header i {
+        font-size: 16px;
+    }
+
+/* ========== BODY - CART LIST ========== */
+.mini-cart-list {
+    list-style: none;
+    margin: 0;
+    padding: 12px;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+    .mini-cart-list::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .mini-cart-list::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 10px;
+    }
+
+.mini-cart-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+}
+
+    .mini-cart-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .mini-cart-item img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border: 1px solid #f0f0f0;
+        border-radius: 3px;
+    }
+
+.mini-cart-info {
+    flex: 1;
+    padding-right: 20px;
+}
+
+    .mini-cart-info h4 {
+        font-size: 13px;
+        font-weight: 500;
+        margin: 0 0 6px 0;
+        line-height: 1.3;
+    }
+
+        .mini-cart-info h4 a {
+            color: #000;
+            text-decoration: none;
+        }
+
+            .mini-cart-info h4 a:hover {
+                opacity: 0.6;
+            }
+
+.mini-cart-price {
+    font-size: 12px;
+    color: #666;
+}
+
+.mini-cart-remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #999;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+    .mini-cart-remove:hover {
+        color: #e74c3c;
+    }
+
+/* ========== BODY - USER LIST ========== */
+.mini-user-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+}
+
+    .mini-user-list li a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 18px;
+        font-size: 14px;
+        color: #000;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+        .mini-user-list li a:hover {
+            background: #f8f8f8;
+        }
+
+        .mini-user-list li a i {
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+            color: #666;
+        }
+
+/* ========== FOOTER ========== */
+.mini-cart-footer,
+.mini-user-footer {
+    padding: 15px 18px;
+    border-top: 1px solid #f0f0f0;
+    background: #fafafa;
+}
+
+/* Cart Total */
+.mini-cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+    .mini-cart-total strong {
+        font-size: 16px;
+        font-weight: 700;
+        color: #e74c3c;
+    }
+
+/* Cart Actions */
+.mini-cart-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-view-cart,
+.btn-checkout {
+    flex: 1;
+    text-align: center;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: all 0.3s;
+}
+
+.btn-view-cart {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+}
+
+    .btn-view-cart:hover {
+        background: #000;
+        color: #fff;
+    }
+
+.btn-checkout {
+    background: #000;
+    color: #fff;
+    border: 2px solid #000;
+}
+
+    .btn-checkout:hover {
+        background: #fff;
+        color: #000;
+    }
+
+/* User Logout Button */
+.btn-logout {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #fff;
+    background: #e74c3c;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background 0.3s;
+}
+
+    .btn-logout:hover {
+        background: #c0392b;
+    }
+
+    .btn-logout i {
+        margin-right: 6px;
+    }
+
+/* ========== EMPTY STATE ========== */
+.mini-cart-empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: #999;
+}
+
+    .mini-cart-empty i {
+        font-size: 48px;
+        margin-bottom: 12px;
+        opacity: 0.5;
+    }
+
+    .mini-cart-empty p {
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+/* ========== LARGE SCREENS (1200px+) ========== */
+@media (min-width: 1200px) {
+    .mini-cart,
+    .mini-user {
+        width: 340px;
+    }
+
+    .mini-cart-item img {
+        width: 65px;
+        height: 65px;
+    }
+
+    .search-container {
+        width: 380px;
+    }
+}
+
+/* ========== MEDIUM SCREENS (992px - 1199px) ========== */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .header-nav {
+        display: none;
+    }
+
+    .mini-cart,
+    .mini-user {
+        width: 300px;
+    }
+
+    .mini-cart-header,
+    .mini-user-header {
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+
+    .mini-cart-list {
+        padding: 10px;
+        max-height: 240px;
+    }
+
+    .mini-cart-item img {
+        width: 55px;
+        height: 55px;
+    }
+
+    .mini-cart-info h4 {
+        font-size: 12px;
+    }
+
+    .mini-cart-price {
+        font-size: 11px;
+    }
+
+    .mini-user-list li a {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+    .mini-cart-footer,
+    .mini-user-footer {
+        padding: 12px 15px;
+    }
+
+    .search-container {
+        width: 320px;
+    }
+}
+
+/* ========== TABLETS & MOBILE (below 992px) ========== */
+@media (max-width: 991px) {
+    .header-nav {
+        display: none;
+    }
+
+    /* Hide desktop search */
+    .header-search {
+        display: none !important;
+    }
+
+    .mini-cart,
+    .mini-user {
+        width: 280px;
+    }
+
+    .mini-cart-header,
+    .mini-user-header {
+        padding: 12px 15px;
+        font-size: 12px;
+    }
+
+    .mini-cart-list {
+        padding: 10px;
+        max-height: 220px;
+    }
+
+    .mini-cart-item {
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        gap: 10px;
+    }
+
+        .mini-cart-item img {
+            width: 50px;
+            height: 50px;
+        }
+
+    .mini-cart-info h4 {
+        font-size: 11px;
+    }
+
+    .mini-cart-price {
+        font-size: 10px;
+    }
+
+    .mini-cart-remove {
+        font-size: 12px;
+    }
+
+    .mini-user-list li a {
+        padding: 10px 15px;
+        font-size: 12px;
+        gap: 10px;
+    }
+
+        .mini-user-list li a i {
+            font-size: 13px;
+            width: 16px;
+        }
+
+    .mini-cart-footer,
+    .mini-user-footer {
+        padding: 12px 15px;
+    }
+
+    .mini-cart-total {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+        .mini-cart-total strong {
+            font-size: 14px;
+        }
+
+    .btn-view-cart,
+    .btn-checkout {
+        padding: 9px 10px;
+        font-size: 11px;
+    }
+
+    .btn-logout {
+        padding: 9px;
+        font-size: 11px;
+    }
+
+    /* Mobile search adjustments */
+    .search-form-mobile {
+        padding: 12px 18px;
+    }
+
+    .search-input-mobile {
+        font-size: 15px;
+    }
+}
+
+/* ========== SMALL SCREENS (below 576px) ========== */
+@media (max-width: 575px) {
+    .mini-cart,
+    .mini-user {
+        width: 260px;
+        right: -10px;
+    }
+
+    .mini-cart-header,
+    .mini-user-header {
+        padding: 10px 12px;
+        font-size: 11px;
+    }
+
+    .mini-cart-list {
+        padding: 8px;
+        max-height: 200px;
+    }
+
+    .mini-cart-item img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .mini-cart-info h4 {
+        font-size: 10px;
+        margin-bottom: 4px;
+    }
+
+    .mini-cart-price {
+        font-size: 9px;
+    }
+
+    .mini-user-list li a {
+        padding: 9px 12px;
+        font-size: 11px;
+    }
+
+    .mini-cart-footer,
+    .mini-user-footer {
+        padding: 10px 12px;
+    }
+
+    .mini-cart-actions {
+        gap: 6px;
+    }
+
+    .btn-view-cart,
+    .btn-checkout {
+        padding: 8px;
+        font-size: 10px;
+    }
+
+    .btn-logout {
+        padding: 8px;
+        font-size: 10px;
+    }
+
+    .mini-cart-empty {
+        padding: 40px 15px;
+    }
+
+        .mini-cart-empty i {
+            font-size: 40px;
+        }
+
+        .mini-cart-empty p {
+            font-size: 12px;
+        }
+
+    .cart-count {
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+        top: -5px;
+        right: -5px;
+    }
+
+    /* Mobile search */
+    .search-form-mobile {
+        padding: 10px 15px;
+    }
+
+    .search-input-mobile {
+        font-size: 14px;
+    }
+}
