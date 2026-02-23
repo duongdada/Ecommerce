@@ -1,0 +1,86 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@using E_Commerce.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<ItemProduct>
+<div class="col-12 col-lg-9">
+    <div class="shop-header">
+        <div class="shop-results">
+            <h2 class="shop-title">
+                Tìm kiếm theo giá: @string.Format("{0:N0} ₫", @ViewBag.fromPrice) - @string.Format("{0:N0} ₫", @ViewBag.toPrice)
+            </h2>
+            <p class="shop-count">Tìm thấy @Model.TotalItemCount sản phẩm</p>
+        </div>
+        <div class="shop-sort">
+            <select class="sort-select" onchange="sortProducts(this.value)">
+                <option value="newest" @(ViewBag.sortBy == "newest" ? "selected" : "")>Mới nhất</option>
+                <option value="price-asc" @(ViewBag.sortBy == "price-asc" ? "selected" : "")>Giá: Thấp đến Cao</option>
+                <option value="price-desc" @(ViewBag.sortBy == "price-desc" ? "selected" : "")>Giá: Cao đến Thấp</option>
+                <option value="name-asc" @(ViewBag.sortBy == "name-asc" ? "selected" : "")>Tên: A-Z</option>
+                <option value="name-desc" @(ViewBag.sortBy == "name-desc" ? "selected" : "")>Tên: Z-A</option>
+            </select>
+        </div>
+    </div>
+    <div class="row g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col-6 col-sm-6 col-md-4 col-lg-4">
+                <div class="product-card">
+                    <div class="product-card-img-wrapper">
+                        <a href="/Products/Detail/@product.Id">
+                            <img src="~/Upload/Products/@product.Photo" alt="@product.Name" title="@product.Name" class="product-card-img">
+                        </a>
+                        @if (product.Hot == 1)
+                        {
+                            <span class="product-card-badge">Hot</span>
+                        }
+                        @if (product.Discount > 0)
+                        {
+                            <span class="product-card-badge" style="background-color: #e74c3c; left: auto; right: 16px;">-@product.Discount%</span>
+                        }
+                    </div>
+                    <div class="product-card-body">
+                        <h3 class="product-card-title">
+                            <a href="/Products/Detail/@product.Id" style="text-decoration: none; color: inherit;">
+                                @product.Name
+                            </a>
+                        </h3>
+                        <div class="product-card-price">
+                            @if (product.Discount > 0)
+                            {
+                                <span class="product-card-price-old">@string.Format("{0:N0} ₫", product.Price)</span>
+                                @string.Format("{0:N0} ₫", product.Price - (product.Price * product.Discount) / 100)
+                            }
+                            else
+                            {
+                                @string.Format("{0:N0} ₫", product.Price)
+                            }
+                        </div>
+                        <a href="/Cart/Buy/@product.Id" class="btn btn-dark w-100 mt-3" style="border-radius: 8px; padding: 10px;">
+                            <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (Model.PageCount > 1)
+    {
+        <div class="pagination-wrapper mt-5">
+            @Html.PagedListPager(Model, page => Url.Action("SearchPrice", new {
+            page = page,
+                fromPrice = ViewBag.fromPrice,
+                toPrice = ViewBag.toPrice,
+                sortBy = ViewBag.sortBy
+                }))
+    </div>
+        }
+</div>
+<script>
+    function sortProducts(sortValue) {
+        const fromPrice = @ViewBag.fromPrice;
+        const toPrice = @ViewBag.toPrice;
+        window.location.href = `/Search/SearchPrice?fromPrice=${fromPrice}&toPrice=${toPrice}&sortBy=${sortValue}`;
+    }
+</script>

@@ -1,0 +1,335 @@
+/* ============= CONTACT PAGE STYLES ============= */
+
+/* Contact Map */
+.contact-map {
+    width: 100%;
+    height: 450px;
+    border: none;
+}
+
+/* Contact Section */
+.contact-section {
+    padding: 80px 0;
+    background-color: #f8f8f8;
+}
+
+.contact-wrapper {
+    background-color: #fff;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Contact Info */
+.contact-info {
+    padding: 60px 50px;
+    background-color: #fff;
+}
+
+.contact-info-title {
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+}
+
+.contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.contact-info-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+    .contact-info-icon i {
+        font-size: 18px;
+        color: #000;
+    }
+
+.contact-info-text {
+    flex: 1;
+}
+
+    .contact-info-text a {
+        color: #333;
+        text-decoration: none;
+        transition: opacity 0.3s ease;
+    }
+
+        .contact-info-text a:hover {
+            opacity: 0.6;
+        }
+
+.contact-social {
+    margin-top: 50px;
+}
+
+.contact-social-title {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .social-icon:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .social-icon i {
+        font-size: 18px;
+    }
+
+/* Contact Form */
+.contact-form-wrapper {
+    padding: 60px 50px;
+    background-color: #fafafa;
+}
+
+.contact-form-title {
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-row-custom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group-custom {
+    display: flex;
+    flex-direction: column;
+}
+
+    .form-group-custom label {
+        font-size: 14px;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        color: #333;
+        font-weight: 500;
+    }
+
+.form-input-custom {
+    width: 100%;
+    padding: 15px 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+    .form-input-custom:focus {
+        outline: none;
+        border-color: #000;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-input-custom::placeholder {
+        color: #999;
+    }
+
+.form-textarea-custom {
+    width: 100%;
+    padding: 15px 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 150px;
+    transition: all 0.3s ease;
+}
+
+    .form-textarea-custom:focus {
+        outline: none;
+        border-color: #000;
+        box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-textarea-custom::placeholder {
+        color: #999;
+    }
+
+.btn-submit-custom {
+    width: 100%;
+    padding: 18px 40px;
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-submit-custom:hover {
+        background-color: #fff;
+        color: #000;
+    }
+
+/* ============= RESPONSIVE ============= */
+
+/* Large devices (desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .contact-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+/* Medium devices (tablets, 992px and up) */
+@media (max-width: 1199px) {
+    .contact-info,
+    .contact-form-wrapper {
+        padding: 50px 40px;
+    }
+
+    .contact-info-title,
+    .contact-form-title {
+        font-size: 28px;
+        letter-spacing: 3px;
+    }
+}
+
+@media (max-width: 991px) {
+    .contact-section {
+        padding: 60px 0;
+    }
+
+    .contact-info,
+    .contact-form-wrapper {
+        padding: 40px 30px;
+    }
+
+    .contact-info-title,
+    .contact-form-title {
+        font-size: 24px;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+    }
+
+    .contact-social {
+        margin-top: 40px;
+    }
+
+    .contact-social-title {
+        font-size: 20px;
+        letter-spacing: 2px;
+    }
+
+    .form-row-custom {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 575px) {
+    .contact-map {
+        height: 300px;
+    }
+
+    .contact-section {
+        padding: 40px 0;
+    }
+
+    .contact-info,
+    .contact-form-wrapper {
+        padding: 30px 20px;
+    }
+
+    .contact-info-title,
+    .contact-form-title {
+        font-size: 20px;
+        letter-spacing: 2px;
+        margin-bottom: 25px;
+    }
+
+    .contact-info-item {
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .contact-info-icon i {
+        font-size: 16px;
+    }
+
+    .contact-social {
+        margin-top: 30px;
+    }
+
+    .contact-social-title {
+        font-size: 18px;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+    }
+
+    .social-icons {
+        gap: 12px;
+    }
+
+    .social-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+        .social-icon i {
+            font-size: 16px;
+        }
+
+    .form-input-custom,
+    .form-textarea-custom {
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+
+    .form-textarea-custom {
+        min-height: 120px;
+    }
+
+    .btn-submit-custom {
+        padding: 15px 30px;
+        font-size: 12px;
+        letter-spacing: 2px;
+    }
+}

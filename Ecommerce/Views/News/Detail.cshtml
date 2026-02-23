@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutNews.cshtml";
+    ViewBag.Title = Model.Name;
+}
+@using E_Commerce.Models
+@model ItemNews
+
+<!-- News Detail Section -->
+<section class="news-detail-section">
+    <div class="container">
+        <!-- News Header -->
+        <div class="news-detail-header">
+            <h1 class="news-detail-title">@Model.Name</h1>
+        </div>
+
+        <!-- Featured Image -->
+        @if (!string.IsNullOrEmpty(Model.Photo))
+        {
+            <div class="news-detail-featured-img">
+                <img src="~/Upload/News/@Model.Photo" alt="@Model.Name">
+            </div>
+        }
+
+        <!-- News Content -->
+        <div class="news-detail-content">
+            @Html.Raw(Model.Description)
+            @Html.Raw(Model.Content)
+        </div>
+
+        <!-- Share Buttons -->
+        <div class="news-detail-share">
+            <h3>Chia sẻ bài viết</h3>
+            <div class="share-buttons">
+                <a href="#" class="share-btn facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="share-btn twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="share-btn pinterest">
+                    <i class="fab fa-pinterest-p"></i>
+                </a>
+                <a href="#" class="share-btn linkedin">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

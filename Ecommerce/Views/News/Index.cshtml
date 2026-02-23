@@ -1,0 +1,50 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutNews.cshtml";
+    ViewBag.Title = "Tin Tức";
+}
+@using E_Commerce.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<ItemNews>
+
+<!-- News Hero -->
+<section class="news-hero">
+    <div class="news-hero-content">
+        <h1 class="news-hero-title">TIN TỨC</h1>
+        <p class="news-hero-subtitle">Cập nhật những tin tức mới nhất về thời trang và xu hướng</p>
+    </div>
+</section>
+
+<!-- News List Section -->
+<section class="news-list-section">
+    <div class="container">
+        <!-- News Grid -->
+        <div class="news-grid">
+            @foreach (var row in Model)
+            {
+                <article class="news-item">
+                    <div class="news-item-img">
+                        <a href="/News/Detail/@row.Id">
+                            <img src="~/Upload/News/@row.Photo" alt="@row.Name" title="@row.Name">
+                        </a>
+                    </div>
+                    <div class="news-item-content">
+                        <h3 class="news-item-title">
+                            <a href="/News/Detail/@row.Id">@row.Name</a>
+                        </h3>
+                        <p class="news-item-excerpt">
+                            @Html.Raw(row.Description)
+                        </p>
+                        <a href="/News/Detail/@row.Id" class="news-item-read-more">
+                            Đọc thêm <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+        </div>
+    </div>
+</section>

@@ -1,0 +1,129 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutContact.cshtml";
+    ViewBag.Title = "Liên Hệ";
+}
+
+
+
+<!-- Contact Section -->
+<section class="contact-section">
+    <div class="container">
+        <div class="contact-wrapper">
+            <div class="row g-0">
+                <!-- Contact Info -->
+                <div class="col-lg-5">
+                    <div class="contact-info">
+                        <h2 class="contact-info-title">Thông tin liên hệ</h2>
+
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-info-text">
+                                <a href="tel:0589506666">ELEGANCE: 0123 456 789</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-info-text">
+                                <a href="mailto:lanperfumestore@gmail.com">abc@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-info-text">
+                                147 Mai Dịch, Cầu Giấy, Hà Nội
+                            </div>
+                        </div>
+
+                        <div class="contact-social">
+                            <h3 class="contact-social-title">Theo dõi chúng tôi</h3>
+                            <div class="social-icons">
+                                <a href="#" class="social-icon" aria-label="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-icon" aria-label="TikTok">
+                                    <i class="fab fa-tiktok"></i>
+                                </a>
+                                <a href="#" class="social-icon" aria-label="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon" aria-label="Shopee">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="col-lg-7">
+                    <div class="contact-form-wrapper">
+                        <h2 class="contact-form-title">Liên hệ với chúng tôi</h2>
+
+                        <form class="contact-form" method="post" action="/Contact/SendMessage">
+                            <div class="form-row-custom">
+                                <div class="form-group-custom">
+                                    <label for="name">Họ và tên</label>
+                                    <input type="text"
+                                           id="name"
+                                           name="name"
+                                           class="form-input-custom"
+                                           placeholder="Nguyễn Văn A"
+                                           required>
+                                </div>
+
+                                <div class="form-group-custom">
+                                    <label for="phone">Số điện thoại</label>
+                                    <input type="tel"
+                                           id="phone"
+                                           name="phone"
+                                           class="form-input-custom"
+                                           placeholder="0123 456 789"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="form-group-custom">
+                                <label for="email">Email</label>
+                                <input type="email"
+                                       id="email"
+                                       name="email"
+                                       class="form-input-custom"
+                                       placeholder="Nhập email"
+                                       required>
+                            </div>
+
+                            <div class="form-group-custom">
+                                <label for="message">Ghi chú</label>
+                                <textarea id="message"
+                                          name="message"
+                                          class="form-textarea-custom"
+                                          placeholder="Ghi chú..."
+                                          required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit-custom">
+                                Gửi ngay
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Google Maps -->
+<iframe class="contact-map"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.828317172544!2d105.7717032737976!3d21.039554387410597!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454b5534fb3bf%3A0x70d71b071349fa94!2sDevPro%20Edu!5e0!3m2!1svi!2s!4v1766670783468!5m2!1svi!2s"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+</iframe>

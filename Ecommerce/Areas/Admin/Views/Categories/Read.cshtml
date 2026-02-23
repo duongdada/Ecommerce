@@ -1,0 +1,171 @@
+﻿@using E_Commerce.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<RowCategory>
+
+@{
+    Layout = "~/Areas/Admin/Views/_Shared/_Layout.cshtml";
+}
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    public List<RowCategory> GetSubCategories(int categoryId)
+    {
+        return db.Categories.Where(c => c.ParentId == categoryId)
+                            .OrderByDescending(c => c.Id)
+                            .ToList();
+    }
+}
+
+<div class="col-md-12">
+    <div class="mb-3">
+        <a href="/Admin/Categories/Create" class="btn btn-dark">
+            <i class="fas fa-plus me-1"></i> Add Category
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white fw-bold">
+            List Categories
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th style="width:150px;" class="text-center">Display HomePage</th>
+                            <th style="width:120px;" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model)
+                        {
+                            <!-- Cấp 1: Parent Category -->
+                            <tr>
+                                <td><strong>@row.Name</strong></td>
+                                <td class="text-center">
+                                    @if (row.DisplayHomePage == 1)
+                                    {
+                                        <i class="fas fa-check-circle text-success fs-4"></i>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <a href="/Admin/Categories/Update/@row.Id" class="text-primary me-2" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/Admin/Categories/Delete/@row.Id" class="text-danger" title="Delete"
+                                       onclick="return confirm('Are you sure?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                            @* Cấp 2: Subcategories *@
+                            var subCategories = GetSubCategories(row.Id);
+                            foreach (var sub in subCategories)
+                            {
+                                <tr>
+                                    <td style="padding-left:40px;">
+                                        <i class="fas fa-angle-right text-muted me-1"></i> @sub.Name
+                                    </td>
+                                    <td class="text-center">
+                                        @if (sub.DisplayHomePage == 1)
+                                        {
+                                            <i class="fas fa-check-circle text-success fs-4"></i>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/Admin/Categories/Update/@sub.Id" class="text-primary me-2" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="/Admin/Categories/Delete/@sub.Id" class="text-danger" title="Delete"
+                                           onclick="return confirm('Are you sure?');">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                @* Cấp 3: Sub-subcategories *@
+                                var subSubCategories = GetSubCategories(sub.Id);
+                                foreach (var subsub in subSubCategories)
+                                {
+                                    <tr>
+                                        <td style="padding-left:80px;">
+                                            <i class="fas fa-angle-double-right text-muted me-1"></i> @subsub.Name
+                                        </td>
+                                        <td class="text-center">
+                                            @if (subsub.DisplayHomePage == 1)
+                                            {
+                                                <i class="fas fa-check-circle text-success fs-4"></i>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="/Admin/Categories/Update/@subsub.Id" class="text-primary me-2" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="/Admin/Categories/Delete/@subsub.Id" class="text-danger" title="Delete"
+                                               onclick="return confirm('Are you sure?');">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <style>
+                .pagination-container {
+                    text-align: center;
+                    margin: 20px 0;
+                }
+
+                .pagination {
+                    display: inline-block;
+                    padding: 0;
+                    margin: 0;
+                    list-style: none;
+                }
+
+                    .pagination li {
+                        display: inline-block;
+                        margin: 0 2px;
+                    }
+
+                        .pagination li a,
+                        .pagination li span {
+                            display: block;
+                            padding: 8px 14px;
+                            border: 1px solid #ddd;
+                            border-radius: 6px;
+                            background: #fff;
+                            color: #555;
+                            text-decoration: none;
+                            min-width: 40px;
+                            text-align: center;
+                        }
+
+                            .pagination li a:hover {
+                                background: #000;
+                                color: #fff;
+                                border-color: #000;
+                            }
+
+                        .pagination li.active span {
+                            background: #000;
+                            color: #fff;
+                            border-color: #000;
+                        }
+            </style>
+
+            <!-- Pagination -->
+            <div class="mt-3">
+                @Html.PagedListPager(Model, page => Url.Action("Read", new { page = page }))
+            </div>
+        </div>
+    </div>
+</div>

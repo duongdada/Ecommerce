@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Normalize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/ea7e180c34.js" crossorigin="anonymous"></script>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="~/Admin/css/index.css">
+
+    <title>Elegance Admin</title>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="sidebar-logo">ELEGANCE</h1>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- XÓA class="active" VÀ SỬA LẠI MENU, BỎ TRÙNG LẶP -->
+            <a href="/Admin/Categories" class="nav-item">
+                <i class="fas fa-list"></i>
+                <span>Danh mục sản phẩm</span>
+            </a>
+            <a href="/Admin/Products" class="nav-item">
+                <i class="fas fa-box"></i>
+                <span>Danh sách sản phẩm</span>
+            </a>
+            <a href="/Admin/News" class="nav-item">
+                <i class="fas fa-newspaper"></i>
+                <span>Danh sách tin tức</span>
+            </a>
+            <a href="/Admin/Orders" class="nav-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Danh sách đơn hàng</span>
+            </a>
+            <a href="/Admin/Adv" class="nav-item">
+                <i class="fas fa-ad"></i>
+                <span>Danh sách quảng cáo</span>
+            </a>
+            <a href="/Admin/Users" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Quản lý người dùng</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Cài đặt</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-6 col-md-4">
+                        <button class="menu-toggle" id="menuToggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 class="page-title">Dashboard</h2>
+                    </div>
+                    <div class="col-6 col-md-8">
+                        <div class="topbar-actions">
+                            <button class="topbar-btn">
+                                <i class="fas fa-bell"></i>
+                                <span class="badge">3</span>
+                            </button>
+                            <div class="admin-profile">
+                                <img src="~/Admin/images/Avatar.jpg" class="profile-img">
+                                <span class="profile-name d-none d-md-inline">Admin</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <div class="dashboard-content">
+            <div class="container-fluid py-4">
+                <div class="empty-placeholder py-5">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Admin/js/main.js"></script>
+</body>
+
+</html>

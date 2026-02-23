@@ -1,0 +1,139 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.footer {
+    padding: 140px 0 0;
+}
+
+.footer-col {
+    margin-bottom: 40px;
+}
+
+.footer-title {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.footer-desc {
+    color: #000;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.footer-social {
+    display: flex;
+    gap: 15px;
+}
+
+.social-link {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ededed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.footer-heading {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #000;
+    text-decoration: none;
+    font-size: 14px;
+    transition: opacity 0.3s ease;
+}
+
+.footer-links a:hover {
+    opacity: 0.6;
+}
+
+.footer-newsletter-text {
+    font-size: 14px;
+    color: #000;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.footer-newsletter {
+    display: flex;
+    border: 1px solid #ededed;
+    background-color: #fff;
+}
+
+.newsletter-input {
+    flex: 1;
+    border: none;
+    padding: 12px 15px;
+    font-size: 13px;
+    outline: none;
+}
+
+.newsletter-btn {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.newsletter-btn:hover {
+    opacity: 0.8;
+}
+
+.footer-bottom {
+    border-top: 1px solid #ededed;
+    padding: 30px 0;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-copyright {
+    font-size: 13px;
+    color: #000;
+    margin: 0;
+}
+
+.footer-payment {
+    display: flex;
+    gap: 15px;
+    font-size: 24px;
+    color: #000;
+}

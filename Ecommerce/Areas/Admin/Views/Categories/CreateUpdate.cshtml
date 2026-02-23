@@ -1,0 +1,112 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/_Shared/_Layout.cshtml";
+    string _Name = Model != null ? Model.Name : "";
+    int _ParentId = Model != null ? Model.ParentId : 0;
+    int _DisplayHomePage = Model != null ? Model.DisplayHomePage : 0;
+    int _Id = Model != null ? Model.Id : 0;
+}
+
+@using E_Commerce.Models
+
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    // lấy danh mục theo parent id
+    public List<RowCategory> GetCategoriesByParent(int parentId)
+    {
+        return db.Categories
+                 .Where(item => item.ParentId == parentId)
+                 .OrderByDescending(item => item.Id)
+                 .ToList();
+    }
+}
+
+<div class="col-md-12">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white fw-bold">
+            @(Model != null ? "Edit Category" : "Add Category")
+        </div>
+
+        <div class="card-body">
+            <form method="post" action="@ViewBag.formAction">
+
+                <!-- Name -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 fw-semibold">Name</label>
+                    <div class="col-md-10">
+                        <input type="text"
+                               name="Name"
+                               value="@_Name"
+                               class="form-control"
+                               required />
+                    </div>
+                </div>
+
+                <!-- Parent Category -->
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 fw-semibold">Parent Category</label>
+                    <div class="col-md-10">
+                        <select name="ParentId"
+                                class="form-control"
+                                style="max-width:300px;">
+
+                            <option value="0"></option>
+
+                            @* danh mục cấp 1 *@
+                            @foreach (var item in GetCategoriesByParent(0))
+                            {
+                                string selected1 = (_ParentId == item.Id) ? "selected" : "";
+                                <option value="@item.Id" @selected1>
+                                    @item.Name
+                                </option>
+
+                                @* danh mục cấp 2 *@
+                                foreach (var sub in GetCategoriesByParent(item.Id))
+                                {
+                                    string selected2 = (_ParentId == sub.Id) ? "selected" : "";
+                                    <option value="@sub.Id" @selected2>
+                                        &nbsp;&nbsp;@sub.Name
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Display HomePage -->
+                <div class="form-group row mb-3">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <div class="form-check">
+                            <input type="checkbox"
+                                   name="DisplayHomePage"
+                                   class="form-check-input"
+                                   id="displayCheck"
+                                   @(_DisplayHomePage == 1 ? "checked" : "") />
+                            <label class="form-check-label fw-semibold"
+                                   for="displayCheck">
+                                Display on Home Page
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-group row mt-4">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-10">
+                        <button type="submit" class="btn btn-dark px-4">
+                            <i class="fas fa-save me-1"></i>
+                            @(Model != null ? "Update" : "Create")
+                        </button>
+                        <a href="/Admin/Categories/Read"
+                           class="btn btn-secondary px-4 ms-2">
+                            <i class="fas fa-arrow-left me-1"></i> Back
+                        </a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

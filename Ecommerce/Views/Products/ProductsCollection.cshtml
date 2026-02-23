@@ -1,0 +1,103 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutTrangTrong.cshtml";
+}
+@using E_Commerce.Models
+@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<ItemProduct>
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    // Lấy tên danh mục của sản phẩm
+    public string GetCategoryName(int ProductId)
+    {
+        var category = (from cat in db.Categories
+                        join catProd in db.CategoriesProducts on cat.Id equals catProd.CategoryId
+                        where catProd.ProductId == ProductId
+                        select cat).FirstOrDefault();
+        return category != null ? category.Name : "Uncategorized";
+    }
+}
+
+<!-- Products Grid -->
+<div class="col-12 col-lg-9">
+    <!-- Shop Header -->
+    <div class="shop-header">
+        <p class="shop-result">
+            Showing <strong>@Model.FirstItemOnPage-@Model.LastItemOnPage</strong> of <strong>@Model.TotalItemCount</strong> results
+        </p>
+        <div class="shop-controls">
+            <select class="shop-select" onchange="sortProducts(this.value)">
+                <option value="newest" @(ViewBag.sortBy == "newest" ? "selected" : "")>Mới nhất</option>
+                <option value="price-asc" @(ViewBag.sortBy == "price-asc" ? "selected" : "")>Giá: Thấp đến Cao</option>
+                <option value="price-desc" @(ViewBag.sortBy == "price-desc" ? "selected" : "")>Giá: Cao đến Thấp</option>
+                <option value="name-asc" @(ViewBag.sortBy == "name-asc" ? "selected" : "")>Tên: A-Z</option>
+                <option value="name-desc" @(ViewBag.sortBy == "name-desc" ? "selected" : "")>Tên: Z-A</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="row g-4" id="productsGrid">
+        @foreach (var product in Model)
+        {
+            <!-- Product Card -->
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="product-card">
+                    <div class="product-card-img-wrapper">
+                        <a href="/Products/Detail/@product.Id">
+                            <img src="~/Upload/Products/@product.Photo" alt="@product.Name" class="product-card-img">
+                        </a>
+                        @if (product.Hot == 1)
+                        {
+                            <span class="product-card-badge">Hot</span>
+                        }
+                        @if (product.Discount > 0)
+                        {
+                            <span class="product-card-badge" style="background-color: #e74c3c; left: auto; right: 16px;">
+                                -@product.Discount%
+                            </span>
+                        }
+                    </div>
+                    <div class="product-card-body">
+                        <div class="product-card-category">@GetCategoryName(product.Id)</div>
+                        <h5 class="product-card-title">
+                            <a href="/Products/Detail/@product.Id" style="text-decoration: none; color: inherit;">
+                                @product.Name
+                            </a>
+                        </h5>
+                        <div class="product-card-price">
+                            @if (product.Discount > 0)
+                            {
+                                @string.Format("{0:N0} ₫", product.Price - (product.Price * product.Discount) / 100)
+                                <span class="product-card-price-old">@string.Format("{0:N0} ₫", product.Price)</span>
+                            }
+                            else
+                            {
+                                @string.Format("{0:N0} ₫", product.Price)
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.PageCount > 1)
+    {
+        <div class="row">
+            <div class="col-12 text-center" style="margin-top: 50px; margin-bottom: 50px;">
+                @Html.PagedListPager(Model, page => Url.Action("Collection", new {
+                page = page,
+                        sortBy = ViewBag.sortBy
+                        }))
+        </div>
+    </div>
+        }
+</div>
+
+<script>
+    function sortProducts(sortValue) {
+        window.location.href = `/Products/Collection?sortBy=${sortValue}`;
+    }
+</script>

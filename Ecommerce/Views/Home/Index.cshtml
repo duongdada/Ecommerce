@@ -1,0 +1,298 @@
+﻿@using E_Commerce.Models
+@using E_Commerce.Helper
+@{
+    Layout = "~/Views/Shared/LayoutTrangChu.cshtml";
+}
+@functions {
+    public MyDbContext db = new MyDbContext();
+
+    //Lấy 4 sản phẩm nổi bật
+    public List<ItemProduct> HotProducts()
+    {
+        List<ItemProduct> rows = db.Products.Where(item => item.Hot == 1).OrderByDescending(item => item.Id).Skip(0).Take(4).ToList();
+        return rows != null ? rows : new List<ItemProduct>();
+    }
+
+    //Lấy sản phẩm Hiển thị ở trang chủ
+    public List<RowCategory> GetCategories()
+    {
+        var rows = db.Categories
+                     .Where(item => item.DisplayHomePage == 1)
+                     .OrderByDescending(item => item.Id)
+                     .ToList();
+
+        return rows != null ? rows : new List<RowCategory>();
+    }
+
+    //lấy 4 sản phẩm tương ứng với danh mục
+    public List<ItemProduct> GetProducts(int categoryId)
+    {
+        return (
+            from product in db.Products
+            join category_product in db.CategoriesProducts
+                on product.Id equals category_product.ProductId
+            join category in db.Categories
+                on category_product.CategoryId equals category.Id
+            where category_product.CategoryId == categoryId
+            select product
+        ).Skip(0).Take(4).ToList();
+    }
+
+    //Lấy 6 tin tức nổi bật
+    public List<ItemNews> HotNews()
+    {
+        List<ItemNews> rows = db.News.Where(item => item.Hot == 1).OrderByDescending(item => item.Id).Skip(0).Take(6).ToList();
+        return rows != null ? rows : new List<ItemNews>();
+    }
+}
+
+<!-- Hero Section (Position 1) -->
+@{
+    List<ItemAdv> itemAdvs1 = Adv.GetAdv(1);
+}
+@if (itemAdvs1 != null && itemAdvs1.Any())
+{
+    foreach (var adv in itemAdvs1)
+    {
+        <section class="hero" style="background-image: url('/Upload/Adv/@adv.Photo'); background-size: cover; background-position: center;">
+            <div class="hero-content">
+                <p class="hero-subtitle">Spring Collection 2025</p>
+                <h1 class="hero-title">TIMELESS ELEGANCE</h1>
+                <p class="hero-description">Discover the perfect blend of sophistication and style</p>
+                <a href="/Products/Collection" class="hero-btn">Explore Collection</a>
+            </div>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
+    }
+}
+else
+{
+    <section class="hero">
+        <div class="hero-content">
+            <p class="hero-subtitle">Spring Collection 2025</p>
+            <h1 class="hero-title">TIMELESS ELEGANCE</h1>
+            <p class="hero-description">Discover the perfect blend of sophistication and style</p>
+            <a href="/Shop" class="hero-btn">Explore Collection</a>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+}
+
+<!-- Hot Products Section -->
+<section class="hot-products">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-subtitle">Trending Now</p>
+            <h2 class="section-title">Hot Products</h2>
+            <p class="section-description">Discover our most sought-after pieces this season</p>
+        </div>
+        <div class="row g-4">
+            @{
+                var hotProducts = HotProducts();
+            }
+            @foreach (var product in hotProducts)
+            {
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+                    <div class="product-card">
+                        <div class="product-card-img-wrapper">
+                            <a href="/Products/Detail/@product.Id">
+                                <img src="~/Upload/Products/@product.Photo" alt="@product.Name" title="@product.Name">
+                            </a>
+                            <span class="product-badge">Hot</span>
+                        </div>
+                        <div class="product-card-info">
+                            <a href="/Products/Detail/@product.Id" class="product-name">@product.Name</a>
+                            <div class="product-price-wrapper">
+                                @if (product.Discount > 0)
+                                {
+                                    <span class="product-price-old">@string.Format("{0:N0} ₫", product.Price)</span>
+                                    <span class="product-price">@string.Format("{0:N0} ₫", product.Price - (product.Price * product.Discount) / 100)</span>
+                                }
+                                else
+                                {
+                                    <span class="product-price">@string.Format("{0:N0} ₫", product.Price)</span>
+                                }
+                            </div>
+                            <a href="/Cart/Buy/@product.Id" class="product-add-cart">Add to Cart</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Advertisement Banner 1 (Position 2) -->
+@{
+    List<ItemAdv> itemAdvs2 = Adv.GetAdv(2);
+}
+@if (itemAdvs2 != null && itemAdvs2.Any())
+{
+    <section class="adv-banner">
+        <div class="container">
+            @foreach (var adv in itemAdvs2)
+            {
+                <div class="adv-banner-wrapper">
+                    <a href="#" class="adv-banner-link">
+                        <img src="~/Upload/Adv/@adv.Photo" alt="Advertisement" class="adv-banner-img">
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<!-- Featured Categories -->
+@{
+    var categories = GetCategories();
+}
+@foreach (var category in categories)
+{
+    <section class="category-products">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-subtitle">Shop Collection</p>
+                <h2 class="section-title">@category.Name</h2>
+                <p class="section-description">Curated selections for the modern wardrobe</p>
+            </div>
+            <div class="row g-4">
+                @{
+                    var categoryProducts = GetProducts(category.Id);
+                }
+                @foreach (var product in categoryProducts)
+                {
+                    <div class="col-6 col-sm-6 col-md-4 col-lg-3">
+                        <div class="product-card">
+                            <div class="product-card-img-wrapper">
+                                <a href="/Products/Detail/@product.Id">
+                                    <img src="~/Upload/Products/@product.Photo" alt="@product.Name" title="@product.Name">
+                                </a>
+                                @if (product.Discount > 0)
+                                {
+                                    <span class="product-badge sale">-@product.Discount%</span>
+                                }
+                            </div>
+                            <div class="product-card-info">
+                                <a href="/Products/Detail/@product.Id" class="product-name">@product.Name</a>
+                                <div class="product-price-wrapper">
+                                    @if (product.Discount > 0)
+                                    {
+                                        <span class="product-price-old">@string.Format("{0:N0} ₫", product.Price)</span>
+                                        <span class="product-price">@string.Format("{0:N0} ₫", product.Price - (product.Price * product.Discount) / 100)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="product-price">@string.Format("{0:N0} ₫", product.Price)</span>
+                                    }
+                                </div>
+                                <a href="/Cart/Buy/@product.Id" class="product-add-cart">Add to Cart</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Advertisement Banner 2 (Position 3) -->
+@{
+    List<ItemAdv> itemAdvs3 = Adv.GetAdv(3);
+}
+@if (itemAdvs3 != null && itemAdvs3.Any())
+{
+    <section class="adv-banner adv-banner-secondary">
+        <div class="container">
+            @foreach (var adv in itemAdvs3)
+            {
+                <div class="adv-banner-wrapper">
+                    <a href="#" class="adv-banner-link">
+                        <img src="~/Upload/Adv/@adv.Photo" alt="Advertisement" class="adv-banner-img">
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+
+<!-- Hot News Section -->
+<section class="hot-news">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-subtitle">Latest Stories</p>
+            <h2 class="section-title">Fashion News</h2>
+            <p class="section-description">Stay updated with the latest trends and style tips</p>
+        </div>
+        <div class="row g-4">
+            @{
+                var hotNews = HotNews();
+            }
+            @foreach (var news in hotNews)
+            {
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="news-card">
+                        <div class="news-card-img">
+                            <a href="/News/Detail/@news.Id">
+                                <img src="~/Upload/News/@news.Photo" alt="@news.Name" title="@news.Name">
+                            </a>
+                        </div>
+                        <div class="news-card-info">
+                            <h3 class="news-title">
+                                <a href="/News/Detail/@news.Id">@news.Name</a>
+                            </h3>
+                            <p class="news-description">@Html.Raw(news.Description)</p>
+                            <a href="/News/Detail/@news.Id" class="news-read-more">
+                                Read More
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-5">
+            <a href="/News" class="view-all-btn">View All News</a>
+        </div>
+    </div>
+</section>
+
+<!-- Banner (Position 4) -->
+@{
+    List<ItemAdv> itemAdvs4 = Adv.GetAdv(4);
+}
+@if (itemAdvs4 != null && itemAdvs4.Any())
+{
+    foreach (var adv in itemAdvs4)
+    {
+        <section class="banner" style="background-image: url('/Upload/Adv/@adv.Photo'); background-size: cover; background-position: center;">
+            <div class="banner-content">
+                <p class="banner-subtitle">Limited Edition</p>
+                <h2 class="banner-title">NEW SEASON COLLECTION</h2>
+                <p class="banner-text">
+                    Elevate your wardrobe with our latest arrivals. Timeless pieces designed for the
+                    modern individual.
+                </p>
+                <a href="/Products/Collection" class="banner-btn">Discover More</a>
+            </div>
+        </section>
+    }
+}
+else
+{
+    <section class="banner">
+        <div class="banner-content">
+            <p class="banner-subtitle">Limited Edition</p>
+            <h2 class="banner-title">NEW SEASON COLLECTION</h2>
+            <p class="banner-text">
+                Elevate your wardrobe with our latest arrivals. Timeless pieces designed for the
+                modern individual.
+            </p>
+            <a href="/Shop" class="banner-btn">Discover More</a>
+        </div>
+    </section>
+}

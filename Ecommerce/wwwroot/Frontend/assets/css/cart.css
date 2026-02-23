@@ -1,0 +1,346 @@
+/* ============================================
+   CART PAGE STYLES
+   ============================================ */
+
+/* ========== MAIN CART CONTAINER ========== */
+.template-cart {
+    padding: 80px 0;
+    background-color: #fafafa;
+}
+
+/* ========== CART PAGE TITLE ========== */
+.cart-page-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+    .cart-page-title h1 {
+        font-size: 42px;
+        font-weight: 300;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+    }
+
+    .cart-page-title p {
+        font-size: 15px;
+        color: #666;
+        letter-spacing: 1px;
+    }
+
+/* ========== CART TABLE ========== */
+.table-cart {
+    background-color: #fff;
+    margin-bottom: 30px;
+    border: 1px solid #f0f0f0;
+}
+
+    /* Table Header */
+    .table-cart thead {
+        background-color: #000;
+        color: #fff;
+    }
+
+        .table-cart thead th {
+            padding: 20px 15px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            border: none;
+        }
+
+    /* Table Body */
+    .table-cart tbody td {
+        padding: 25px 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .table-cart tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Product Image */
+    .table-cart .image {
+        width: 100px;
+    }
+
+    .table-cart td img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border: 1px solid #f0f0f0;
+    }
+
+    /* Product Name */
+    .table-cart .name {
+        min-width: 250px;
+    }
+
+    .table-cart td a {
+        color: #000;
+        text-decoration: none;
+        font-size: 14px;
+        transition: opacity 0.3s;
+    }
+
+        .table-cart td a:hover {
+            opacity: 0.6;
+        }
+
+    /* Price */
+    .table-cart .price {
+        font-size: 16px;
+        font-weight: 600;
+        color: #000;
+    }
+
+    /* Quantity Input */
+    .table-cart .quantity {
+        width: 150px;
+    }
+
+    .table-cart input[type="number"] {
+        width: 80px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+        font-size: 14px;
+    }
+
+        .table-cart input[type="number"]:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+    /* Remove Button */
+    .table-cart td a[href*="Remove"] {
+        color: #999;
+        font-size: 18px;
+        transition: color 0.3s;
+    }
+
+        .table-cart td a[href*="Remove"]:hover {
+            color: #e74c3c;
+        }
+
+    /* Table Footer */
+    .table-cart tfoot td {
+        padding: 25px 15px;
+        border-top: 2px solid #000;
+        background-color: #fafafa;
+    }
+
+/* ========== CART BUTTONS ========== */
+.button {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #fff;
+    color: #000;
+    border: 2px solid #000;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .button:hover {
+        background-color: #000;
+        color: #fff;
+    }
+
+    .button.black {
+        background-color: #000;
+        color: #fff;
+    }
+
+        .button.black:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+.pull-left {
+    float: left;
+    margin-right: 10px;
+}
+
+.pull-right {
+    float: right;
+    margin-left: 10px;
+}
+
+/* ========== CART TOTAL ========== */
+.total-cart {
+    background-color: #fff;
+    padding: 40px;
+    text-align: right;
+    border: 1px solid #f0f0f0;
+    margin-top: 30px;
+    font-size: 16px;
+    line-height: 2;
+}
+
+    .total-cart .button {
+        margin-top: 20px;
+    }
+
+/* ========== EMPTY CART ========== */
+.cart-empty {
+    background-color: #fff;
+    padding: 80px 40px;
+    text-align: center;
+    border: 1px solid #f0f0f0;
+}
+
+    .cart-empty i {
+        font-size: 64px;
+        color: #ddd;
+        margin-bottom: 20px;
+    }
+
+    .cart-empty h3 {
+        font-size: 24px;
+        font-weight: 300;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+    }
+
+    .cart-empty p {
+        font-size: 15px;
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+/* ========== LARGE SCREENS (1200px+) ========== */
+@media (min-width: 1200px) {
+    .template-cart .container {
+        max-width: 1140px;
+    }
+}
+
+/* ========== MEDIUM SCREENS (992px - 1199px) ========== */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .cart-page-title h1 {
+        font-size: 36px;
+        letter-spacing: 4px;
+    }
+
+    .table-cart thead th {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 991px) {
+    .template-cart {
+        padding: 60px 0;
+    }
+
+    .cart-page-title {
+        margin-bottom: 40px;
+    }
+
+        .cart-page-title h1 {
+            font-size: 32px;
+            letter-spacing: 3px;
+        }
+
+    /* Make table responsive */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table-cart {
+        min-width: 800px;
+    }
+
+    .total-cart {
+        padding: 30px;
+    }
+}
+
+/* ========== TABLETS (768px - 991px) ========== */
+@media (max-width: 767px) {
+    .cart-page-title h1 {
+        font-size: 28px;
+        letter-spacing: 2px;
+    }
+
+    .table-cart thead th {
+        padding: 15px 10px;
+        font-size: 10px;
+    }
+
+    .table-cart tbody td {
+        padding: 20px 10px;
+    }
+
+    .table-cart td img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .table-cart .name {
+        min-width: 200px;
+    }
+
+    .button {
+        padding: 10px 20px;
+        font-size: 11px;
+    }
+
+    .total-cart {
+        padding: 25px;
+        font-size: 14px;
+    }
+}
+
+/* ========== SMALL SCREENS (576px - 767px) ========== */
+@media (max-width: 575px) {
+    .template-cart {
+        padding: 40px 0;
+    }
+
+    .cart-page-title h1 {
+        font-size: 24px;
+        letter-spacing: 2px;
+    }
+
+    .cart-page-title p {
+        font-size: 13px;
+    }
+
+    .table-cart {
+        min-width: 700px;
+    }
+
+    .button {
+        padding: 10px 15px;
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+
+    .total-cart {
+        padding: 20px;
+        font-size: 13px;
+    }
+
+    .cart-empty {
+        padding: 60px 20px;
+    }
+
+        .cart-empty i {
+            font-size: 48px;
+        }
+
+        .cart-empty h3 {
+            font-size: 20px;
+        }
+}

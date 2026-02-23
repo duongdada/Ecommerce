@@ -1,0 +1,282 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutTrangChu.cshtml";
+}
+
+<div class="template-success">
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+
+            <h1>Đặt hàng thành công!</h1>
+            <p class="success-message">
+                Cảm ơn bạn đã đặt hàng tại <strong>Elegance Shop</strong>.<br>
+                Chúng tôi đã gửi email xác nhận đến <strong>@ViewBag.Email</strong>
+            </p>
+
+            <div class="order-info">
+                <div class="info-item">
+                    <span class="label">Mã đơn hàng:</span>
+                    <span class="value order-code">@ViewBag.OrderCode</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Email:</span>
+                    <span class="value">@ViewBag.Email</span>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Lưu ý quan trọng:</strong>
+                    <p>Vui lòng lưu lại <strong>Mã đơn hàng</strong> và <strong>Email</strong> để tra cứu đơn hàng sau này.</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/Order/Track" class="btn-track">
+                    <i class="fas fa-search"></i>
+                    Tra cứu đơn hàng
+                </a>
+                <a href="/Home" class="btn-home">
+                    <i class="fas fa-home"></i>
+                    Về trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .template-success {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+    }
+
+    .success-card {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 50px 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 30px;
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: scaleIn 0.5s ease-out;
+    }
+
+        .success-icon i {
+            font-size: 50px;
+            color: #fff;
+        }
+
+    @@keyframes scaleIn {
+        0%
+
+    {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    }
+
+    .success-card h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #000;
+    }
+
+    .success-message {
+        font-size: 16px;
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 35px;
+    }
+
+        .success-message strong {
+            color: #000;
+        }
+
+    .order-info {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px dashed #ddd;
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .info-item .label {
+            font-weight: 500;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-item .value {
+            font-weight: 600;
+            color: #000;
+            font-size: 15px;
+        }
+
+    .order-code {
+        color: #27ae60 !important;
+        font-size: 20px !important;
+        letter-spacing: 1px;
+    }
+
+    .info-box {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 35px;
+        display: flex;
+        gap: 15px;
+        text-align: left;
+    }
+
+        .info-box i {
+            font-size: 24px;
+            color: #856404;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #856404;
+            font-size: 15px;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .btn-track,
+    .btn-home {
+        flex: 1;
+        min-width: 200px;
+        padding: 15px 30px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-track {
+        background: #000;
+        color: #fff;
+        border: 2px solid #000;
+    }
+
+        .btn-track:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+    .btn-home {
+        background: #fff;
+        color: #000;
+        border: 2px solid #000;
+    }
+
+        .btn-home:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+    @@media (max-width: 767px) {
+        .template-success
+
+    {
+        padding: 40px 15px;
+    }
+
+    .success-card {
+        padding: 40px 25px;
+    }
+
+        .success-card h1 {
+            font-size: 24px;
+        }
+
+    .success-message {
+        font-size: 14px;
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+    }
+
+        .success-icon i {
+            font-size: 40px;
+        }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn-track,
+    .btn-home {
+        min-width: 100%;
+    }
+
+    }
+</style>

@@ -1,0 +1,77 @@
+﻿@{
+    //load file Layout.cshtml vao day
+    Layout = "~/Areas/Admin/Views/_Shared/_Layout.cshtml";
+}
+@* de phan trang thi phai using cac doi tuong sau *@
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@* doi tuong thao tac file *@
+@using System.IO
+@* nhin thay file MyDbContext *@
+@using E_Commerce.Models
+@functions {
+    public MyDbContext db = new MyDbContext();
+    // ⭐ SỬA: int → int? để handle khách vãng lai (CustomerId = null)
+    public ItemCustomer GetCustomers(int? _CustomerId)
+    {
+        if (_CustomerId == null) return null;
+        //lay mot ban ghi
+        ItemCustomer record = db.Customers.Where(item => item.Id == _CustomerId.Value).FirstOrDefault();
+        return record != null ? record : null;
+    }
+}
+<div class="col-md-12">
+    <div class="panel panel-primary">
+        <div class="panel-heading">List orders</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Created</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th style="width:150px;"></th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    ItemCustomer recordCustomer = GetCustomers(item.CustomerId);
+                    <tr>
+                        <!-- ⭐ SỬA: Nếu có Customer → hiện từ Customer, nếu null (khách vãng lai) → hiện từ Order -->
+                        <td>@(recordCustomer?.Name ?? item.Name ?? "N/A")</td>
+                        <td>@(recordCustomer?.Address ?? item.Address ?? "N/A")</td>
+                        <td>@(recordCustomer?.Phone ?? item.Phone ?? "N/A")</td>
+                        <td>@item.Create.ToString("ddMMyyyy")</td>
+                        <td>@string.Format("{0:#,#.}", item.Price)</td>
+                        <td>
+                            @if (item.Status == 2)
+                            {
+                                <text><label class="label label-warning">Đã hủy đơn hàng</label></text>
+                            }
+                            @if (item.Status == 1)
+                            {
+                                <text><label class="label label-danger">Đã giao hàng</label></text>
+                            }
+                            @if (item.Status == 0)
+                            {
+                                <text><label class="label label-primary">Chưa giao hàng</label></text>
+                            }
+                        </td>
+                        <td style="text-align:center;">
+                            <a href="/Admin/Orders/Detail/@item.Id">Chi tiết</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <style type="text/css">
+                .pagination {
+                    padding: 0px;
+                    margin: 0px;
+                }
+            </style>
+            @* ham sau se thuc hien viec hien thi phan trang *@
+            @Html.PagedListPager((IPagedList)Model, p => Url.Action("Index", new { page = p }))
+        </div>
+    </div>
+</div>
