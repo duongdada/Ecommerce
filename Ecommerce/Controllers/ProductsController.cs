@@ -1,7 +1,6 @@
 ﻿using E_Commerce.Models;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
-//sử dụng thư viện sau để phân trang
 
 namespace E_Commerce.Controllers
 {
@@ -9,18 +8,50 @@ namespace E_Commerce.Controllers
     {
         public MyDbContext db = new MyDbContext();
 
-        // THÊM MỚI: Trang shop - hiển thị tất cả sản phẩm
-        public IActionResult Collection(int? page, string sortBy)
+        // SỬA: Trang shop với filter Size/Color/Price
+        public IActionResult Collection(int? page, string sortBy, string sizes, string colors, double? fromPrice, double? toPrice)
         {
-            // xác định số trang hiện tại
             int page_number = page ?? 1;
-            // số bản ghi trên một trang
             int page_size = 9;
-
             ViewBag.sortBy = sortBy ?? "newest";
 
             // Lấy tất cả sản phẩm
             List<ItemProduct> listRecord = db.Products.ToList();
+
+            // Filter theo Size
+            if (!string.IsNullOrEmpty(sizes))
+            {
+                var sizeList = sizes.Split(',').Select(s => s.Trim()).ToList();
+                listRecord = listRecord.Where(p =>
+                    !string.IsNullOrEmpty(p.AvailableSizes) &&
+                    sizeList.Any(size => p.AvailableSizes.Contains(size))
+                ).ToList();
+            }
+
+            // Filter theo Color
+            if (!string.IsNullOrEmpty(colors))
+            {
+                var colorList = colors.Split(',').Select(c => c.Trim()).ToList();
+                listRecord = listRecord.Where(p =>
+                    !string.IsNullOrEmpty(p.AvailableColors) &&
+                    colorList.Any(color => p.AvailableColors.Contains(color))
+                ).ToList();
+            }
+
+            // Filter theo Price
+            if (fromPrice.HasValue)
+            {
+                listRecord = listRecord.Where(p =>
+                    (p.Price - (p.Price * p.Discount) / 100) >= fromPrice.Value
+                ).ToList();
+            }
+
+            if (toPrice.HasValue)
+            {
+                listRecord = listRecord.Where(p =>
+                    (p.Price - (p.Price * p.Discount) / 100) <= toPrice.Value
+                ).ToList();
+            }
 
             // Sắp xếp
             switch (sortBy)
@@ -37,7 +68,7 @@ namespace E_Commerce.Controllers
                 case "name-desc":
                     listRecord = listRecord.OrderByDescending(item => item.Name).ToList();
                     break;
-                default: // newest
+                default:
                     listRecord = listRecord.OrderByDescending(item => item.Id).ToList();
                     break;
             }
@@ -48,12 +79,10 @@ namespace E_Commerce.Controllers
         // các sản phẩm thuộc danh mục
         public IActionResult Category(int id, int? page)
         {
-            // xác định số trang hiện tại
             int page_number = page ?? 1;
-            // số bản ghi trên một trang
             int page_size = 9;
             ViewBag.CategoryId = id;
-            // lấy danh sách các bản ghi
+
             List<ItemProduct> listRecord = (from product in db.Products
                                             join category_product in db.CategoriesProducts
                                                 on product.Id equals category_product.ProductId
@@ -67,7 +96,6 @@ namespace E_Commerce.Controllers
         // chi tiết sản phẩm
         public IActionResult Detail(int id)
         {
-            // lấy một bản ghi
             ItemProduct record = db.Products.FirstOrDefault(item => item.Id == id);
             return View("ProductDetail", record);
         }
@@ -75,9 +103,7 @@ namespace E_Commerce.Controllers
         // đánh giá số sao của sản phẩm
         public IActionResult Rate(int id)
         {
-            // lấy biến star truyền từ url
             int _Star = !String.IsNullOrEmpty(Request.Query["star"]) ? Convert.ToInt32(Request.Query["star"]) : 0;
-            // thêm bản ghi vào table Rating
             ItemRating record = new ItemRating();
             record.ProductId = id;
             record.Star = _Star;

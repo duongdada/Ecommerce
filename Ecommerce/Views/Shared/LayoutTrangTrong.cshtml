@@ -1,4 +1,30 @@
-﻿<!DOCTYPE html>
+﻿@using E_Commerce.Models
+@{
+    var db = new MyDbContext();
+
+    // Lấy tất cả size và color có trong database
+    var allSizes = db.Products
+        .Where(p => !string.IsNullOrEmpty(p.AvailableSizes))
+        .Select(p => p.AvailableSizes)
+        .ToList()
+        .SelectMany(s => s.Split(','))
+        .Select(s => s.Trim())
+        .Distinct()
+        .OrderBy(s => s)
+        .ToList();
+
+    var allColors = db.Products
+        .Where(p => !string.IsNullOrEmpty(p.AvailableColors))
+        .Select(p => p.AvailableColors)
+        .ToList()
+        .SelectMany(c => c.Split(','))
+        .Select(c => c.Trim())
+        .Distinct()
+        .OrderBy(c => c)
+        .ToList();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -82,7 +108,7 @@
             margin: 4px 0;
         }
 
-        .btn-apply-price {
+        .btn-apply-filter {
             width: 100%;
             padding: 12px 20px;
             background-color: #000;
@@ -100,19 +126,64 @@
             gap: 8px;
         }
 
-            .btn-apply-price:hover {
+            .btn-apply-filter:hover {
                 background-color: #333;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             }
 
-            .btn-apply-price:active {
+            .btn-apply-filter:active {
                 transform: translateY(0);
             }
 
-            .btn-apply-price i {
+            .btn-apply-filter i {
                 font-size: 13px;
             }
+
+
+        /* Override Bootstrap Pagination - Đặt cuối cùng */
+        .pagination li a,
+        .pagination li span,
+        ul.pagination li a,
+        ul.pagination li span {
+            color: #000 !important;
+            background-color: transparent !important;
+            border: none !important;
+            min-width: 45px;
+            height: 45px;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 400;
+            transition: all 0.2s ease;
+        }
+
+            .pagination li a:hover,
+            ul.pagination li a:hover {
+                color: #666 !important;
+                background-color: #fafafa !important;
+                border-radius: 8px;
+            }
+
+        .pagination li.active a,
+        .pagination li.active span,
+        ul.pagination li.active a,
+        ul.pagination li.active span {
+            font-weight: 700 !important;
+            color: #fff !important;
+            background-color: #000 !important;
+            border: none !important;
+            border-radius: 8px !important;
+        }
+
+        .pagination li.disabled a,
+        .pagination li.disabled span,
+        ul.pagination li.disabled a,
+        ul.pagination li.disabled span {
+            color: #ccc !important;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -129,38 +200,6 @@
                 <!-- Sidebar -->
                 <div class="col-12 col-lg-3">
                     <aside class="sidebar">
-                        <!-- Categories Filter -->
-                        <div class="sidebar-section">
-                            <h3 class="sidebar-title">Categories</h3>
-                            <ul class="sidebar-filter-list">
-                                <li class="sidebar-filter-item">
-                                    <input type="checkbox" id="cat-dresses" class="sidebar-filter-input" name="category"
-                                           value="dresses">
-                                    <label for="cat-dresses" class="sidebar-filter-label">Dresses</label>
-                                </li>
-                                <li class="sidebar-filter-item">
-                                    <input type="checkbox" id="cat-tops" class="sidebar-filter-input" name="category"
-                                           value="tops">
-                                    <label for="cat-tops" class="sidebar-filter-label">Tops & Blouses</label>
-                                </li>
-                                <li class="sidebar-filter-item">
-                                    <input type="checkbox" id="cat-pants" class="sidebar-filter-input" name="category"
-                                           value="pants">
-                                    <label for="cat-pants" class="sidebar-filter-label">Pants & Trousers</label>
-                                </li>
-                                <li class="sidebar-filter-item">
-                                    <input type="checkbox" id="cat-outerwear" class="sidebar-filter-input"
-                                           name="category" value="outerwear">
-                                    <label for="cat-outerwear" class="sidebar-filter-label">Outerwear</label>
-                                </li>
-                                <li class="sidebar-filter-item">
-                                    <input type="checkbox" id="cat-accessories" class="sidebar-filter-input"
-                                           name="category" value="accessories">
-                                    <label for="cat-accessories" class="sidebar-filter-label">Accessories</label>
-                                </li>
-                            </ul>
-                        </div>
-
                         <!-- Price Filter -->
                         <div class="sidebar-section">
                             <h3 class="sidebar-title">Price Range</h3>
@@ -184,58 +223,67 @@
                                            min="0"
                                            step="1000">
                                 </div>
-                                <button class="btn-apply-price" onclick="applyPriceFilter()">
-                                    <i class="fas fa-filter"></i> Áp dụng bộ lọc
-                                </button>
                             </div>
                         </div>
 
                         <!-- Size Filter -->
-                        <div class="sidebar-section">
-                            <h3 class="sidebar-title">Size</h3>
-                            <div class="size-filter">
-                                <input type="checkbox" id="size-xs" class="size-filter-input" name="size" value="xs">
-                                <label for="size-xs" class="size-filter-label">XS</label>
-
-                                <input type="checkbox" id="size-s" class="size-filter-input" name="size" value="s">
-                                <label for="size-s" class="size-filter-label">S</label>
-
-                                <input type="checkbox" id="size-m" class="size-filter-input" name="size" value="m">
-                                <label for="size-m" class="size-filter-label">M</label>
-
-                                <input type="checkbox" id="size-l" class="size-filter-input" name="size" value="l">
-                                <label for="size-l" class="size-filter-label">L</label>
-
-                                <input type="checkbox" id="size-xl" class="size-filter-input" name="size" value="xl">
-                                <label for="size-xl" class="size-filter-label">XL</label>
+                        @if (allSizes.Any())
+                        {
+                            <div class="sidebar-section">
+                                <h3 class="sidebar-title">Size</h3>
+                                <div class="size-filter">
+                                    @foreach (var size in allSizes)
+                                    {
+                                        <input type="checkbox"
+                                               id="size-@size.ToLower()"
+                                               class="size-filter-input"
+                                               name="size"
+                                               value="@size">
+                                        <label for="size-@size.ToLower()" class="size-filter-label">@size</label>
+                                    }
+                                </div>
                             </div>
-                        </div>
+                        }
 
                         <!-- Color Filter -->
-                        <div class="sidebar-section">
-                            <h3 class="sidebar-title">Color</h3>
-                            <div class="color-filter">
-                                <input type="checkbox" id="color-black" class="color-filter-input" name="color"
-                                       value="black">
-                                <label for="color-black" class="color-filter-label color-black" title="Black"></label>
-
-                                <input type="checkbox" id="color-white" class="color-filter-input" name="color"
-                                       value="white">
-                                <label for="color-white" class="color-filter-label color-white" title="White"></label>
-
-                                <input type="checkbox" id="color-gray" class="color-filter-input" name="color"
-                                       value="gray">
-                                <label for="color-gray" class="color-filter-label color-gray" title="Gray"></label>
-
-                                <input type="checkbox" id="color-beige" class="color-filter-input" name="color"
-                                       value="beige">
-                                <label for="color-beige" class="color-filter-label color-beige" title="Beige"></label>
-
-                                <input type="checkbox" id="color-navy" class="color-filter-input" name="color"
-                                       value="navy">
-                                <label for="color-navy" class="color-filter-label color-navy" title="Navy"></label>
+                        @if (allColors.Any())
+                        {
+                            <div class="sidebar-section">
+                                <h3 class="sidebar-title">Color</h3>
+                                <div class="color-filter">
+                                    @foreach (var color in allColors)
+                                    {
+                                        var colorStyle = "";
+                                        switch (color.ToLower())
+                                        {
+                                            case "black": colorStyle = "background-color: #000;"; break;
+                                            case "white": colorStyle = "background-color: #fff; border: 1px solid #ddd;"; break;
+                                            case "gray": colorStyle = "background-color: #808080;"; break;
+                                            case "beige": colorStyle = "background-color: #f5f5dc;"; break;
+                                            case "navy": colorStyle = "background-color: #001f3f;"; break;
+                                            case "red": colorStyle = "background-color: #e74c3c;"; break;
+                                            case "blue": colorStyle = "background-color: #3498db;"; break;
+                                            case "pink": colorStyle = "background-color: #ff69b4;"; break;
+                                            default: colorStyle = "background-color: #ccc;"; break;
+                                        }
+                                        <input type="checkbox"
+                                               id="color-@color.ToLower()"
+                                               class="color-filter-input"
+                                               name="color"
+                                               value="@color">
+                                        <label for="color-@color.ToLower()"
+                                               class="color-filter-label"
+                                               style="@colorStyle"
+                                               title="@color"></label>
+                                    }
+                                </div>
                             </div>
-                        </div>
+                        }
+
+                        <!-- Apply Filter Button -->
+                        <button class="btn-apply-filter" onclick="applyFilters()">
+                            <i class="fas fa-filter"></i> Áp dụng bộ lọc
+                        </button>
                     </aside>
                 </div>
 
@@ -251,39 +299,69 @@
     @Html.Partial("~/Views/Shared/Footer.cshtml")
 
     <script>
-        // Hàm áp dụng bộ lọc giá
-        function applyPriceFilter() {
+        function applyFilters() {
+            // Lấy giá trị price
             const fromPrice = document.getElementById('fromPrice').value;
             const toPrice = document.getElementById('toPrice').value;
 
-            // Kiểm tra xem người dùng đã nhập ít nhất 1 ô giá chưa
-            if (!fromPrice && !toPrice) {
-                alert('Vui lòng nhập ít nhất một mức giá để lọc!');
-                return;
+            // Lấy các size đã chọn
+            const selectedSizes = [];
+            document.querySelectorAll('.size-filter-input:checked').forEach(function(checkbox) {
+                selectedSizes.push(checkbox.value);
+            });
+
+            // Lấy các color đã chọn
+            const selectedColors = [];
+            document.querySelectorAll('.color-filter-input:checked').forEach(function(checkbox) {
+                selectedColors.push(checkbox.value);
+            });
+
+            // Tạo URL
+            let url = '/Products/Collection?';
+            let params = [];
+
+            if (fromPrice) {
+                params.push('fromPrice=' + fromPrice);
+            }
+            if (toPrice) {
+                params.push('toPrice=' + toPrice);
+            }
+            if (selectedSizes.length > 0) {
+                params.push('sizes=' + selectedSizes.join(','));
+            }
+            if (selectedColors.length > 0) {
+                params.push('colors=' + selectedColors.join(','));
             }
 
-            // Chuyển hướng đến trang tìm kiếm theo giá
-            window.location.href = `/Search/SearchPrice?fromPrice=${fromPrice || ''}&toPrice=${toPrice || ''}`;
+            url += params.join('&');
+            window.location.href = url;
         }
 
-        // Cho phép nhấn Enter để áp dụng filter
+        // Load filter từ URL khi trang load
         document.addEventListener('DOMContentLoaded', function() {
-            const fromPriceInput = document.getElementById('fromPrice');
-            const toPriceInput = document.getElementById('toPrice');
+            const urlParams = new URLSearchParams(window.location.search);
 
-            if (fromPriceInput) {
-                fromPriceInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        applyPriceFilter();
-                    }
+            // Set price
+            const fromPrice = urlParams.get('fromPrice');
+            const toPrice = urlParams.get('toPrice');
+            if (fromPrice) document.getElementById('fromPrice').value = fromPrice;
+            if (toPrice) document.getElementById('toPrice').value = toPrice;
+
+            // Set sizes
+            const sizes = urlParams.get('sizes');
+            if (sizes) {
+                sizes.split(',').forEach(function(size) {
+                    const checkbox = document.querySelector('.size-filter-input[value="' + size + '"]');
+                    if (checkbox) checkbox.checked = true;
                 });
             }
 
-            if (toPriceInput) {
-                toPriceInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        applyPriceFilter();
-                    }
+            // Set colors
+            const colors = urlParams.get('colors');
+            if (colors) {
+                colors.split(',').forEach(function(color) {
+                    const checkbox = document.querySelector('.color-filter-input[value="' + color + '"]');
+                    if (checkbox) checkbox.checked = true;
                 });
             }
         });

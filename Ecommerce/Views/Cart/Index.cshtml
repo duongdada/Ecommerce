@@ -21,6 +21,7 @@
                             <tr>
                                 <th class="image">Ảnh sản phẩm</th>
                                 <th class="name">Tên sản phẩm</th>
+                                <th class="name">Tùy chọn</th>
                                 <th class="price">Giá bán lẻ</th>
                                 <th class="quantity">Số lượng</th>
                                 <th class="price">Thành tiền</th>
@@ -36,6 +37,29 @@
                                     </td>
                                     <td>
                                         <a href="/Products/Detail/@product.ProductRecord.Id">@product.ProductRecord.Name</a>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(product.SelectedSize) || !string.IsNullOrEmpty(product.SelectedColor))
+                                        {
+                                            <div style="font-size: 14px;">
+                                                @if (!string.IsNullOrEmpty(product.SelectedSize))
+                                                {
+                                                    <span class="badge bg-secondary" style="background-color: #6c757d; color: white; padding: 4px 8px; border-radius: 4px; margin-right: 5px;">
+                                                        Size: @product.SelectedSize
+                                                    </span>
+                                                }
+                                                @if (!string.IsNullOrEmpty(product.SelectedColor))
+                                                {
+                                                    <span class="badge bg-info" style="background-color: #17a2b8; color: white; padding: 4px 8px; border-radius: 4px;">
+                                                        Color: @product.SelectedColor
+                                                    </span>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span style="color: #999;">—</span>
+                                        }
                                     </td>
                                     <td class="price">
                                         @string.Format("{0:N0} ₫", product.ProductRecord.Price - (product.ProductRecord.Price * product.ProductRecord.Discount) / 100)

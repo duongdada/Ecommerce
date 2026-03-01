@@ -88,10 +88,14 @@
                                 <i class="fas fa-search search-icon-inside"></i>
                                 <input type="text"
                                        name="keyword"
+                                       id="searchInputDesktop"
                                        class="search-input"
                                        placeholder="Tìm kiếm sản phẩm..."
                                        autocomplete="off">
                             </form>
+
+                            <!-- Dropdown gợi ý -->
+                            <div class="search-suggestions" id="searchSuggestionsDesktop"></div>
                         </div>
                     </div>
 
@@ -233,10 +237,14 @@
                         <i class="fas fa-search search-icon-mobile"></i>
                         <input type="text"
                                name="keyword"
+                               id="searchInputMobile"
                                class="search-input-mobile"
                                placeholder="Tìm kiếm sản phẩm..."
                                autocomplete="off">
                     </form>
+
+                    <!-- Dropdown gợi ý mobile -->
+                    <div class="search-suggestions-mobile" id="searchSuggestionsMobile"></div>
                 </div>
             </div>
 
@@ -247,7 +255,7 @@
     <div class="header-mobile-menu d-lg-none" id="mobileMenu">
         <ul class="mobile-nav-list">
             <li><a href="/Home">Trang chủ</a></li>
-            <li><a href="/Products">Sản phẩm</a></li>
+            <li><a href="/Products/Collection">Sản phẩm</a></li>
             <li><a href="/News">Tin tức</a></li>
             <li><a href="/Contact">Liên hệ</a></li>
         </ul>
@@ -330,6 +338,98 @@
             if (headerSearch && !headerSearch.contains(e.target)) {
                 searchContainer.classList.remove("active");
             }
+        }
+    });
+
+
+        // Autocomplete Search
+    let searchTimeout;
+
+    // Desktop search
+    const searchInputDesktop = document.getElementById('searchInputDesktop');
+    const suggestionsDesktop = document.getElementById('searchSuggestionsDesktop');
+
+    if (searchInputDesktop) {
+        searchInputDesktop.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const keyword = this.value.trim();
+
+            if (keyword.length < 2) {
+                suggestionsDesktop.style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`/Search/Autocomplete?keyword=${encodeURIComponent(keyword)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        showSuggestions(data, suggestionsDesktop);
+                    });
+            }, 300);
+        });
+    }
+
+    // Mobile search
+    const searchInputMobile = document.getElementById('searchInputMobile');
+    const suggestionsMobile = document.getElementById('searchSuggestionsMobile');
+
+    if (searchInputMobile) {
+        searchInputMobile.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const keyword = this.value.trim();
+
+            if (keyword.length < 2) {
+                suggestionsMobile.style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                fetch(`/Search/Autocomplete?keyword=${encodeURIComponent(keyword)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        showSuggestions(data, suggestionsMobile);
+                    });
+            }, 300);
+        });
+    }
+
+    // Hiển thị gợi ý
+    function showSuggestions(data, container) {
+        if (data.length === 0) {
+            container.innerHTML = '<div class="search-no-results">Không tìm thấy sản phẩm</div>';
+            container.style.display = 'block';
+            return;
+        }
+
+        let html = '';
+        data.forEach(item => {
+            html += `
+                <a href="/Products/Detail/${item.id}" class="search-suggestion-item">
+                    <img src="/Upload/Products/${item.photo}" class="search-suggestion-img" alt="${item.name}">
+                    <div class="search-suggestion-info">
+                        <div class="search-suggestion-name">${item.name}</div>
+                        <div class="search-suggestion-price">${formatPrice(item.price)} ₫</div>
+                    </div>
+                </a>
+            `;
+        });
+
+        container.innerHTML = html;
+        container.style.display = 'block';
+    }
+
+    // Format giá
+    function formatPrice(price) {
+        return Math.round(price).toLocaleString('vi-VN');
+    }
+
+    // Đóng suggestions khi click bên ngoài
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.header-search') && suggestionsDesktop) {
+            suggestionsDesktop.style.display = 'none';
+        }
+        if (!e.target.closest('.header-search-mobile') && suggestionsMobile) {
+            suggestionsMobile.style.display = 'none';
         }
     });
 </script>

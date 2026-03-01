@@ -69,26 +69,45 @@
                 </p>
 
                 <!-- Size Selection -->
-                <div class="product-option">
-                    <label class="option-label">Size:</label>
-                    <div class="size-options">
-                        <button class="size-btn" data-size="XS">XS</button>
-                        <button class="size-btn" data-size="S">S</button>
-                        <button class="size-btn active" data-size="M">M</button>
-                        <button class="size-btn" data-size="L">L</button>
-                        <button class="size-btn" data-size="XL">XL</button>
+                @if (Model.SizesList != null && Model.SizesList.Count > 0)
+                {
+                    <div class="product-option">
+                        <label class="option-label">Size: <span id="selectedSizeLabel"></span></label>
+                        <div class="size-options">
+                            @foreach (var size in Model.SizesList)
+                            {
+                                <button class="size-btn" data-size="@size">@size</button>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
                 <!-- Color Selection -->
-                <div class="product-option">
-                    <label class="option-label">Color:</label>
-                    <div class="color-options">
-                        <button class="color-btn active" style="background-color: #000;" data-color="Black" aria-label="Black"></button>
-                        <button class="color-btn" style="background-color: #fff; border: 1px solid #ededed;" data-color="White" aria-label="White"></button>
-                        <button class="color-btn" style="background-color: #8b7355;" data-color="Beige" aria-label="Beige"></button>
+                @if (Model.ColorsList != null && Model.ColorsList.Count > 0)
+                {
+                    <div class="product-option">
+                        <label class="option-label">Color: <span id="selectedColorLabel"></span></label>
+                        <div class="color-options">
+                            @foreach (var color in Model.ColorsList)
+                            {
+                                var colorStyle = "";
+                                switch (color.ToLower())
+                                {
+                                    case "black": colorStyle = "background-color: #000;"; break;
+                                    case "white": colorStyle = "background-color: #fff; border: 1px solid #ddd;"; break;
+                                    case "gray": colorStyle = "background-color: #808080;"; break;
+                                    case "beige": colorStyle = "background-color: #f5f5dc;"; break;
+                                    case "navy": colorStyle = "background-color: #001f3f;"; break;
+                                    case "red": colorStyle = "background-color: #e74c3c;"; break;
+                                    case "blue": colorStyle = "background-color: #3498db;"; break;
+                                    case "pink": colorStyle = "background-color: #ff69b4;"; break;
+                                    default: colorStyle = "background-color: #ccc;"; break;
+                                }
+                                <button class="color-btn" style="@colorStyle" data-color="@color" aria-label="@color"></button>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
                 <!-- Quantity -->
                 <div class="product-option">
@@ -102,7 +121,7 @@
 
                 <!-- Actions -->
                 <div class="product-actions">
-                    <a href="/Cart/Buy/@Model.Id" class="add-to-cart-btn" style="text-decoration: none; display: block; text-align: center; line-height: 50px;">Add to Cart</a>
+                    <button class="add-to-cart-btn" id="addToCartBtn" onclick="addToCartWithOptions()">Add to Cart</button>
                     <button class="wishlist-btn" aria-label="Add to Wishlist">
                         <i class="far fa-heart"></i>
                     </button>
@@ -209,6 +228,9 @@
 </div>
 
 <script>
+    var selectedSize = null;
+    var selectedColor = null;
+
     // Quantity buttons
     document.getElementById('decreaseQty').addEventListener('click', function() {
         var qtyInput = document.getElementById('qtyInput');
@@ -231,6 +253,8 @@
                 b.classList.remove('active');
             });
             this.classList.add('active');
+            selectedSize = this.getAttribute('data-size');
+            document.getElementById('selectedSizeLabel').textContent = '(' + selectedSize + ')';
         });
     });
 
@@ -241,23 +265,36 @@
                 b.classList.remove('active');
             });
             this.classList.add('active');
+            selectedColor = this.getAttribute('data-color');
+            document.getElementById('selectedColorLabel').textContent = '(' + selectedColor + ')';
         });
     });
+
+    // Add to cart with options
+    function addToCartWithOptions() {
+        var quantity = document.getElementById('qtyInput').value;
+        var url = '/Cart/Buy/@Model.Id?quantity=' + quantity;
+
+        if (selectedSize) {
+            url += '&size=' + encodeURIComponent(selectedSize);
+        }
+        if (selectedColor) {
+            url += '&color=' + encodeURIComponent(selectedColor);
+        }
+
+        window.location.href = url;
+    }
 
     // Tabs functionality
     document.querySelectorAll('.tab-item').forEach(function(tab) {
         tab.addEventListener('click', function() {
             var targetTab = this.getAttribute('data-tab');
-
-            // Remove active class from all tabs and panes
             document.querySelectorAll('.tab-item').forEach(function(t) {
                 t.classList.remove('active');
             });
             document.querySelectorAll('.tab-pane').forEach(function(p) {
                 p.classList.remove('active');
             });
-
-            // Add active class to clicked tab and corresponding pane
             this.classList.add('active');
             document.getElementById(targetTab).classList.add('active');
         });
@@ -268,7 +305,6 @@
         thumb.addEventListener('click', function() {
             var imgSrc = this.querySelector('img').src;
             document.getElementById('mainProductImg').src = imgSrc;
-
             document.querySelectorAll('.thumbnail').forEach(function(t) {
                 t.classList.remove('active');
             });

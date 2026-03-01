@@ -4,9 +4,13 @@ namespace E_Commerce.Models
 {
     public class Item
     {
-        //thong tin san pham
+        // thong tin san pham
         public ItemProduct ProductRecord { get; set; }
-        //so luong
+        // so luong
         public int Quantity { get; set; }
+
+
+        public string? SelectedSize { get; set; }
+        public string? SelectedColor { get; set; }
     }
 }

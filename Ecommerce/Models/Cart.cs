@@ -20,19 +20,26 @@ namespace E_Commerce.Models
             return cart;
         }
 
-        public static void CartAdd(ISession session, int id)
+        // SỬA: Thêm tham số size và color
+        public static void CartAdd(ISession session, int id, string size = null, string color = null)
         {
             if (Cart.GetObjectFromJson<List<Item>>(session, "cart") == null)
             {
                 List<Item> cart = new List<Item>();
                 ItemProduct item = db.Products.Where(tbl => tbl.Id == id).FirstOrDefault();
-                cart.Add(new Item { ProductRecord = item, Quantity = 1 });
+                cart.Add(new Item
+                {
+                    ProductRecord = item,
+                    Quantity = 1,
+                    SelectedSize = size,
+                    SelectedColor = color
+                });
                 session.SetString("cart", JsonConvert.SerializeObject(cart));
             }
             else
             {
                 List<Item> cart = Cart.GetObjectFromJson<List<Item>>(session, "cart");
-                int index = Cart.isExist(session, id);
+                int index = Cart.isExist(session, id, size, color);
                 if (index != -1)
                 {
                     cart[index].Quantity++;
@@ -40,7 +47,13 @@ namespace E_Commerce.Models
                 else
                 {
                     ItemProduct item = db.Products.Where(tbl => tbl.Id == id).FirstOrDefault();
-                    cart.Add(new Item { ProductRecord = item, Quantity = 1 });
+                    cart.Add(new Item
+                    {
+                        ProductRecord = item,
+                        Quantity = 1,
+                        SelectedSize = size,
+                        SelectedColor = color
+                    });
                 }
                 session.SetString("cart", JsonConvert.SerializeObject(cart));
             }
@@ -73,6 +86,23 @@ namespace E_Commerce.Models
             session.SetString("cart", JsonConvert.SerializeObject(cart));
         }
 
+        // THÊM MỚI: isExist với size và color
+        private static int isExist(ISession session, int id, string size = null, string color = null)
+        {
+            List<Item> cart = Cart.GetObjectFromJson<List<Item>>(session, "cart");
+            for (int i = 0; i < cart.Count; i++)
+            {
+                if (cart[i].ProductRecord.Id == id &&
+                    cart[i].SelectedSize == size &&
+                    cart[i].SelectedColor == color)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // GIỮ LẠI: isExist cũ để không bị lỗi
         private static int isExist(ISession session, int id)
         {
             List<Item> cart = Cart.GetObjectFromJson<List<Item>>(session, "cart");
@@ -113,19 +143,14 @@ namespace E_Commerce.Models
                 return 0;
         }
 
-        // ⭐ HÀM MỚI: Checkout cho khách đã đăng nhập (GIỮ NGUYÊN)
         public static void CartCheckOut(ISession session, int customer_id, string paymentMethod = "COD")
         {
             MyDbContext db = new MyDbContext();
             List<Item> _cart = Cart.GetCart(session);
 
-            // Lấy thông tin khách hàng
             var customer = db.Customers.FirstOrDefault(c => c.Id == customer_id);
-
-            // Tạo mã đơn hàng
             string orderCode = GenerateOrderCode();
 
-            // Insert vào table Orders
             ItemOrder _RecordOrder = new ItemOrder();
             _RecordOrder.CustomerId = customer_id;
             _RecordOrder.OrderCode = orderCode;
@@ -135,24 +160,25 @@ namespace E_Commerce.Models
             _RecordOrder.Address = customer?.Address;
             _RecordOrder.Create = DateTime.Now;
             _RecordOrder.Price = _cart.Sum(tbl => (tbl.ProductRecord.Price - (tbl.ProductRecord.Price * tbl.ProductRecord.Discount) / 100) * tbl.Quantity);
-            _RecordOrder.Status = 0; // Chờ xử lý
-            _RecordOrder.PaymentMethod = paymentMethod; // ⭐ THÊM MỚI
-            _RecordOrder.PaymentStatus = paymentMethod == "COD" ? 0 : 0; // COD = chưa thanh toán, Ví = chờ thanh toán
+            _RecordOrder.Status = 0;
+            _RecordOrder.PaymentMethod = paymentMethod;
+            _RecordOrder.PaymentStatus = paymentMethod == "COD" ? 0 : 0;
             _RecordOrder.TransactionId = null;
             db.Orders.Add(_RecordOrder);
             db.SaveChanges();
 
             int order_id = _RecordOrder.Id;
 
-            // Insert vào OrdersDetail
             foreach (var item in _cart)
             {
                 ItemOrderDetail _RecordOrdersDetail = new ItemOrderDetail();
                 _RecordOrdersDetail.OrderId = order_id;
                 _RecordOrdersDetail.ProductId = item.ProductRecord.Id;
-                _RecordOrdersDetail.ProductName = item.ProductRecord.Name; // Lưu tên sản phẩm
+                _RecordOrdersDetail.ProductName = item.ProductRecord.Name;
                 _RecordOrdersDetail.Price = item.ProductRecord.Price - (item.ProductRecord.Price * item.ProductRecord.Discount) / 100;
                 _RecordOrdersDetail.Quantity = item.Quantity;
+                _RecordOrdersDetail.SelectedSize = item.SelectedSize;
+                _RecordOrdersDetail.SelectedColor = item.SelectedColor;
                 db.OrdersDetail.Add(_RecordOrdersDetail);
                 db.SaveChanges();
             }
@@ -160,7 +186,6 @@ namespace E_Commerce.Models
             Cart.CartDestroy(session);
         }
 
-        // ⭐ HÀM MỚI: Checkout cho khách vãng lai (KHÔNG CÓ CUSTOMER_ID)
         public static string CartCheckOutGuest(ISession session, string name, string email, string phone, string address, string paymentMethod = "COD")
         {
             MyDbContext db = new MyDbContext();
@@ -168,15 +193,13 @@ namespace E_Commerce.Models
 
             if (_cart == null || _cart.Count == 0)
             {
-                return null; // Giỏ hàng trống
+                return null;
             }
 
-            // Tạo mã đơn hàng
             string orderCode = GenerateOrderCode();
 
-            // Insert vào table Orders (CustomerId = NULL)
             ItemOrder _RecordOrder = new ItemOrder();
-            _RecordOrder.CustomerId = null; // Khách vãng lai không có CustomerId
+            _RecordOrder.CustomerId = null;
             _RecordOrder.OrderCode = orderCode;
             _RecordOrder.Name = name;
             _RecordOrder.Email = email;
@@ -184,45 +207,43 @@ namespace E_Commerce.Models
             _RecordOrder.Address = address;
             _RecordOrder.Create = DateTime.Now;
             _RecordOrder.Price = _cart.Sum(tbl => (tbl.ProductRecord.Price - (tbl.ProductRecord.Price * tbl.ProductRecord.Discount) / 100) * tbl.Quantity);
-            _RecordOrder.Status = 0; // Chờ xử lý
-            _RecordOrder.PaymentMethod = paymentMethod; // ⭐ THÊM MỚI
-            _RecordOrder.PaymentStatus = paymentMethod == "COD" ? 0 : 0; // COD = chưa thanh toán, Ví = chờ thanh toán
+            _RecordOrder.Status = 0;
+            _RecordOrder.PaymentStatus = paymentMethod == "COD" ? 0 : 0;
             _RecordOrder.TransactionId = null;
             db.Orders.Add(_RecordOrder);
             db.SaveChanges();
 
             int order_id = _RecordOrder.Id;
 
-            // Insert vào OrdersDetail
             foreach (var item in _cart)
             {
                 ItemOrderDetail _RecordOrdersDetail = new ItemOrderDetail();
                 _RecordOrdersDetail.OrderId = order_id;
                 _RecordOrdersDetail.ProductId = item.ProductRecord.Id;
-                _RecordOrdersDetail.ProductName = item.ProductRecord.Name; // Lưu tên sản phẩm
+                _RecordOrdersDetail.ProductName = item.ProductRecord.Name;
                 _RecordOrdersDetail.Price = item.ProductRecord.Price - (item.ProductRecord.Price * item.ProductRecord.Discount) / 100;
                 _RecordOrdersDetail.Quantity = item.Quantity;
+                _RecordOrdersDetail.SelectedSize = item.SelectedSize;
+                _RecordOrdersDetail.SelectedColor = item.SelectedColor;
                 db.OrdersDetail.Add(_RecordOrdersDetail);
                 db.SaveChanges();
             }
 
             Cart.CartDestroy(session);
 
-            return orderCode; // Trả về mã đơn hàng
+            return orderCode;
         }
 
-        // ⭐ HÀM TẠO MÃ ĐƠN HÀNG (Format: EL-250128-001)
         private static string GenerateOrderCode()
         {
             MyDbContext db = new MyDbContext();
-            string dateCode = DateTime.Now.ToString("yyMMdd"); // VD: 250128
+            string dateCode = DateTime.Now.ToString("yyMMdd");
 
-            // Đếm số đơn hàng trong ngày
             int todayOrderCount = db.Orders
                 .Where(o => o.OrderCode != null && o.OrderCode.Contains($"EL-{dateCode}"))
                 .Count();
 
-            string orderNumber = (todayOrderCount + 1).ToString("D3"); // 001, 002, 003...
+            string orderNumber = (todayOrderCount + 1).ToString("D3");
 
             return $"EL-{dateCode}-{orderNumber}";
         }

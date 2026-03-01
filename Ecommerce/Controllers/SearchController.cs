@@ -188,5 +188,26 @@ namespace E_Commerce.Controllers
 
             return View("Filter", listRecord.ToPagedList(page_number, page_size));
         }
+
+        public IActionResult AutoComplete(string keyword)
+        {
+            if (string.IsNullOrEmpty(keyword) || keyword.Length < 2)
+            {
+                return Json(new List<object>());
+            }
+
+            var results = db.Products
+                .Where(c => c.Name.Contains(keyword)).Take(5).Select(p => new
+                {
+                    id = p.Id,
+                    name = p.Name,
+                    photo = p.Photo,
+                    price = p.Price - (p.Price * p.Discount / 100),
+
+                }).ToList();
+
+            return Json(results);
+        }
     }
+
 }

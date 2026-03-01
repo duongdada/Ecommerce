@@ -24,10 +24,12 @@ namespace E_Commerce.Controllers
         }
 
         //cho sản phẩm vào giỏ hàng (bằng chuỗi json)
-        public IActionResult Buy(int id)
+        public IActionResult Buy(int id, string size = null, string color = null, int quantity = 1)
         {
-            //gọi hàm Add từ class cart
-            Cart.CartAdd(HttpContext.Session, id);
+            for (int i = 0; i < quantity; i++)
+            {
+                Cart.CartAdd(HttpContext.Session, id, size, color);
+            }
             return RedirectToAction("Index");
         }
 
