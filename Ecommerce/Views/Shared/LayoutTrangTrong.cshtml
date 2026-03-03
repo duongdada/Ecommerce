@@ -22,6 +22,15 @@
         .Distinct()
         .OrderBy(c => c)
         .ToList();
+
+    //Lấy danh mục con
+    var allCategories = db.Categories
+     .Where(c => c.ParentId != 0)
+     .ToList() // ← Lấy về memory trước
+     .GroupBy(c => c.Name) // ← Rồi mới GroupBy
+     .Select(g => g.First())
+     .OrderBy(c => c.Name)
+     .ToList();
 }
 
 <!DOCTYPE html>
@@ -136,10 +145,62 @@
                 transform: translateY(0);
             }
 
-            .btn-apply-filter i {
-                font-size: 13px;
+        /* Sidebar scroll khi quá dài */
+        .sidebar {
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+        }
+
+            .sidebar::-webkit-scrollbar {
+                width: 6px;
             }
 
+            .sidebar::-webkit-scrollbar-thumb {
+                background: #ddd;
+                border-radius: 10px;
+            }
+
+                .sidebar::-webkit-scrollbar-thumb:hover {
+                    background: #bbb;
+                }
+
+        /* Category show more/less */
+        .category-hidden {
+            display: none;
+        }
+
+        .btn-show-more {
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            color: #666;
+            border: 1px solid #ededed;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+            .btn-show-more:hover {
+                background-color: #fafafa;
+                border-color: #000;
+                color: #000;
+            }
+
+            .btn-show-more i {
+                font-size: 11px;
+                transition: transform 0.3s ease;
+            }
+
+            .btn-show-more.active i {
+                transform: rotate(180deg);
+            }
 
         /* Override Bootstrap Pagination - Đặt cuối cùng */
         .pagination li a,
@@ -226,6 +287,37 @@
                             </div>
                         </div>
 
+                        <!-- Category Filter -->
+                        @if (allCategories.Any())
+                        {
+                            <div class="sidebar-section">
+                                <h3 class="sidebar-title">Categories</h3>
+                                <ul class="sidebar-filter-list" id="categoryList">
+                                    @for (int i = 0; i < allCategories.Count; i++)
+                                    {
+                                        var category = allCategories[i];
+                                        <li class="sidebar-filter-item @(i >= 5 ? "category-hidden" : "")">
+                                            <input type="checkbox"
+                                                   id="cat-@category.Id"
+                                                   class="sidebar-filter-input category-filter-input"
+                                                   name="category"
+                                                   value="@category.Id">
+                                            <label for="cat-@category.Id" class="sidebar-filter-label">
+                                                @category.Name
+                                            </label>
+                                        </li>
+                                    }
+                                </ul>
+                                @if (allCategories.Count > 5)
+                                {
+                                    <button class="btn-show-more" onclick="toggleCategories()">
+                                        <span id="toggleText">Xem thêm</span>
+                                        <i class="fas fa-chevron-down" id="toggleIcon"></i>
+                                    </button>
+                                }
+                            </div>
+                        }
+
                         <!-- Size Filter -->
                         @if (allSizes.Any())
                         {
@@ -304,6 +396,12 @@
             const fromPrice = document.getElementById('fromPrice').value;
             const toPrice = document.getElementById('toPrice').value;
 
+            // Lấy các category đã chọn
+            const selectedCategories = [];
+            document.querySelectorAll('.category-filter-input:checked').forEach(function(checkbox) {
+                selectedCategories.push(checkbox.value);
+            });
+
             // Lấy các size đã chọn
             const selectedSizes = [];
             document.querySelectorAll('.size-filter-input:checked').forEach(function(checkbox) {
@@ -326,6 +424,9 @@
             if (toPrice) {
                 params.push('toPrice=' + toPrice);
             }
+            if (selectedCategories.length > 0) {
+                params.push('categories=' + selectedCategories.join(','));
+            }
             if (selectedSizes.length > 0) {
                 params.push('sizes=' + selectedSizes.join(','));
             }
@@ -337,6 +438,27 @@
             window.location.href = url;
         }
 
+             // Toggle categories
+        function toggleCategories() {
+            const hiddenItems = document.querySelectorAll('.category-hidden');
+            const btn = document.querySelector('.btn-show-more');
+            const text = document.getElementById('toggleText');
+
+            const isHidden = hiddenItems[0].style.display !== 'block';
+
+            hiddenItems.forEach(item => {
+                item.style.display = isHidden ? 'block' : 'none';
+            });
+
+            if (isHidden) {
+                text.textContent = 'Thu gọn';
+                btn.classList.add('active');
+            } else {
+                text.textContent = 'Xem thêm';
+                btn.classList.remove('active');
+            }
+        }
+
         // Load filter từ URL khi trang load
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -346,6 +468,15 @@
             const toPrice = urlParams.get('toPrice');
             if (fromPrice) document.getElementById('fromPrice').value = fromPrice;
             if (toPrice) document.getElementById('toPrice').value = toPrice;
+
+                    // Set categories
+        const categories = urlParams.get('categories');
+        if (categories) {
+            categories.split(',').forEach(function(catId) {
+                const checkbox = document.querySelector('.category-filter-input[value="' + catId + '"]');
+                if (checkbox) checkbox.checked = true;
+            });
+        }
 
             // Set sizes
             const sizes = urlParams.get('sizes');

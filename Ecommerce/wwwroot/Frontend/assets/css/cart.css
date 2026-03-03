@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    CART PAGE STYLES
    ============================================ */
 
@@ -342,5 +342,132 @@
 
         .cart-empty h3 {
             font-size: 20px;
+        }
+}
+
+/* ========== MOBILE CARD LAYOUT (< 768px) ========== */
+@media (max-width: 767px) {
+    /* Hide table structure on mobile */
+    .table-responsive {
+        overflow: visible;
+    }
+
+    .table-cart {
+        min-width: auto;
+        border: none;
+        background: transparent;
+    }
+
+        .table-cart thead {
+            display: none;
+        }
+
+        .table-cart tbody,
+        .table-cart tbody tr,
+        .table-cart tbody td {
+            display: block;
+            width: 100%;
+        }
+
+            .table-cart tbody tr {
+                background: #fff;
+                border: 1px solid #f0f0f0;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                overflow: hidden;
+                position: relative;
+                padding: 15px;
+            }
+
+            .table-cart tbody td {
+                border: none;
+                padding: 8px 0;
+                text-align: left;
+            }
+
+        /* Product Image */
+        .table-cart td img {
+            width: 100%;
+            height: auto;
+            max-width: 150px;
+            margin: 0 auto 15px;
+            display: block;
+        }
+
+        /* Product Name */
+        .table-cart td a {
+            font-size: 16px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Add labels before content */
+        .table-cart tbody td:nth-child(3)::before {
+            content: "Tùy chọn: ";
+            font-weight: 600;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        .table-cart tbody td:nth-child(4)::before {
+            content: "Giá: ";
+            font-weight: 600;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        .table-cart tbody td:nth-child(5)::before {
+            content: "Số lượng: ";
+            font-weight: 600;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        .table-cart tbody td:nth-child(6)::before {
+            content: "Thành tiền: ";
+            font-weight: 600;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        /* Quantity Input */
+        .table-cart input[type="number"] {
+            width: 100px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        /* Remove Button */
+        .table-cart td a[href*="Remove"] {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            padding: 5px;
+        }
+
+        /* Table Footer Buttons */
+        .table-cart tfoot td {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .table-cart tfoot .button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            float: none;
+        }
+
+    /* Total Cart */
+    .total-cart {
+        text-align: center;
+        padding: 20px;
+    }
+
+        .total-cart .button {
+            width: 100%;
+            display: block;
         }
 }

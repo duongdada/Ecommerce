@@ -9,7 +9,7 @@ namespace E_Commerce.Controllers
         public MyDbContext db = new MyDbContext();
 
         // SỬA: Trang shop với filter Size/Color/Price
-        public IActionResult Collection(int? page, string sortBy, string sizes, string colors, double? fromPrice, double? toPrice)
+        public IActionResult Collection(int? page, string sortBy, string categories, string sizes, string colors, double? fromPrice, double? toPrice)
         {
             int page_number = page ?? 1;
             int page_size = 9;
@@ -17,6 +17,18 @@ namespace E_Commerce.Controllers
 
             // Lấy tất cả sản phẩm
             List<ItemProduct> listRecord = db.Products.ToList();
+
+            // Filter theo Category
+            if (!string.IsNullOrEmpty(categories))
+            {
+                var categoryList = categories.Split(',').Select(c => int.Parse(c.Trim())).ToList();
+                var productIdsInCategories = db.CategoriesProducts
+                    .Where(cp => categoryList.Contains(cp.CategoryId))
+                    .Select(cp => cp.ProductId)
+                    .Distinct()
+                    .ToList();
+                listRecord = listRecord.Where(p => productIdsInCategories.Contains(p.Id)).ToList();
+            }
 
             // Filter theo Size
             if (!string.IsNullOrEmpty(sizes))
@@ -77,11 +89,12 @@ namespace E_Commerce.Controllers
         }
 
         // các sản phẩm thuộc danh mục
-        public IActionResult Category(int id, int? page)
+        public IActionResult Category(int id, int? page, string sortBy)
         {
             int page_number = page ?? 1;
             int page_size = 9;
             ViewBag.CategoryId = id;
+            ViewBag.sortBy = sortBy ?? "newest";
 
             List<ItemProduct> listRecord = (from product in db.Products
                                             join category_product in db.CategoriesProducts
@@ -90,6 +103,27 @@ namespace E_Commerce.Controllers
                                                 on category_product.CategoryId equals category.Id
                                             where category_product.CategoryId == id
                                             select product).ToList();
+
+            // Sắp xếp
+            switch (sortBy)
+            {
+                case "price-asc":
+                    listRecord = listRecord.OrderBy(item => item.Price - (item.Price * item.Discount) / 100).ToList();
+                    break;
+                case "price-desc":
+                    listRecord = listRecord.OrderByDescending(item => item.Price - (item.Price * item.Discount) / 100).ToList();
+                    break;
+                case "name-asc":
+                    listRecord = listRecord.OrderBy(item => item.Name).ToList();
+                    break;
+                case "name-desc":
+                    listRecord = listRecord.OrderByDescending(item => item.Name).ToList();
+                    break;
+                default:
+                    listRecord = listRecord.OrderByDescending(item => item.Id).ToList();
+                    break;
+            }
+
             return View("ProductsCategory", listRecord.ToPagedList(page_number, page_size));
         }
 

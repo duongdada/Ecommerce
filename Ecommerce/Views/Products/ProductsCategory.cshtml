@@ -21,12 +21,12 @@
     <div class="shop-header">
         <p class="shop-result">Showing <strong>@Model.FirstItemOnPage-@Model.LastItemOnPage</strong> of <strong>@Model.TotalItemCount</strong> results</p>
         <div class="shop-controls">
-            <select class="shop-select" onchange="location.href = '/Products/Category/@ViewBag.CategoryId?order='+this.value;">
-                <option value="0">Default sorting</option>
-                <option value="priceAsc">Price: Low to High</option>
-                <option value="priceDesc">Price: High to Low</option>
-                <option value="nameAsc">Name: A-Z</option>
-                <option value="nameDesc">Name: Z-A</option>
+            <select class="shop-select" onchange="sortProducts(this.value)">
+                <option value="newest" @(ViewBag.sortBy == "newest" ? "selected" : "")>Mới nhất</option>
+                <option value="price-asc" @(ViewBag.sortBy == "price-asc" ? "selected" : "")>Giá: Thấp đến Cao</option>
+                <option value="price-desc" @(ViewBag.sortBy == "price-desc" ? "selected" : "")>Giá: Cao đến Thấp</option>
+                <option value="name-asc" @(ViewBag.sortBy == "name-asc" ? "selected" : "")>Tên: A-Z</option>
+                <option value="name-desc" @(ViewBag.sortBy == "name-desc" ? "selected" : "")>Tên: Z-A</option>
             </select>
         </div>
     </div>
@@ -78,10 +78,18 @@
     <!-- Pagination -->
     <div class="row">
         <div class="col-12 text-center" style="margin-top: 50px; margin-bottom: 50px;">
-            @Html.PagedListPager(
-            Model,
-            page => Url.Action("Category", new { id = ViewBag.CategoryId, page = page, order = ViewBag.Order })
-                        )
+            @Html.PagedListPager(Model, page => Url.Action("Category", new {
+            id = ViewBag.CategoryId,
+                        page = page,
+                        sortBy = ViewBag.sortBy
+                        }))
         </div>
     </div>
+
 </div>
+
+<script>
+    function sortProducts(sortValue) {
+        window.location.href = `/Products/Category/@ViewBag.CategoryId?sortBy=${sortValue}`;
+    }
+</script>
