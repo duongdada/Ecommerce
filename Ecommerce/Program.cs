@@ -15,19 +15,22 @@ builder.Services.AddDbContext<MyDbContext>();
 builder.Services.AddSession();
 
 // Authentication - Google
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-})
-.AddCookie()
-.AddGoogle(options =>
-{
-    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    options.CallbackPath = "/signin-google";
-    options.SaveTokens = true;
-});
+// builder.Services.AddAuthentication(options =>
+// {
+//     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+// })
+// .AddCookie()
+// .AddGoogle(options =>
+// {
+//     options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+//     options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+//     options.CallbackPath = "/signin-google";
+//     options.SaveTokens = true;
+// });
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie();
 
 var app = builder.Build();
 
