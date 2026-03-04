@@ -5,13 +5,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Ecommerce.csproj", "."]
-RUN dotnet restore "./Ecommerce.csproj"
+COPY ["Ecommerce/Ecommerce.csproj", "Ecommerce/"]
+RUN dotnet restore "Ecommerce/Ecommerce.csproj"
 COPY . .
-RUN dotnet build "Ecommerce.csproj" -c Release -o /app/build
+RUN dotnet build "Ecommerce/Ecommerce.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Ecommerce.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Ecommerce/Ecommerce.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
