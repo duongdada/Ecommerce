@@ -11,11 +11,11 @@ namespace E_Commerce.Helper
         private static string key1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
         private static string key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
         private static string endpoint = "https://sb-openapi.zalopay.vn/v2/create";
-        private static string callbackUrl = "https://localhost:7166/Payment/ZaloPayCallback";
+        private static string callbackUrl = "https://ruehn.store/Payment/ZaloPayCallback";
 
         public static string CreatePaymentUrl(string orderCode, double amount, string description)
         {
-            var embedData = new { redirecturl = "https://localhost:7166/Payment/ZaloPayReturn" };
+            var embedData = new { redirecturl = "https://ruehn.store/Payment/ZaloPayReturn" };
             var items = new[] { new { } };
             var appTransId = DateTime.Now.ToString("yyMMdd") + "_" + orderCode;
 
