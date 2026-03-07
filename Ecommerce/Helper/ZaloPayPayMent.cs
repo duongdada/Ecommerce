@@ -44,6 +44,7 @@ namespace E_Commerce.Helper
                     var content = new FormUrlEncodedContent(param);
                     var response = client.PostAsync(endpoint, content).Result;
                     var responseString = response.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine("ZaloPay response: " + responseString);
                     dynamic result = JsonConvert.DeserializeObject(responseString);
 
                     if (result.return_code == 1)
