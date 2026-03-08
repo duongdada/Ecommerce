@@ -398,16 +398,16 @@ namespace Ecommerce.Controllers
 
         public IActionResult Profile()
         {
-            string email = HttpContext.Session.GetString("custumer_user_email");
+            string email = HttpContext.Session.GetString("customer_user_email");
             if (string.IsNullOrEmpty(email))
-                return Redirect("Account/Login");
+                return Redirect("/Account/Login");
             return View();
         }
 
         [HttpGet]
         public IActionResult GetProfile()
         {
-            string email = HttpContext.Session.GetString("custumer_user_email");
+            string email = HttpContext.Session.GetString("customer_user_email");
             if (string.IsNullOrEmpty(email))
                 return Unauthorized(new { message = "Chưa đăng nhập" });
 
