@@ -395,5 +395,61 @@ namespace Ecommerce.Controllers
             TempData["Success"] = "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay bây giờ.";
             return Redirect("/Account/Login");
         }
+
+        public IActionResult Profile()
+        {
+            string email = HttpContext.Session.GetString("custumer_user_email");
+            if (string.IsNullOrEmpty(email))
+                return Redirect("Account/Login");
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetProfile()
+        {
+            string email = HttpContext.Session.GetString("custumer_user_email");
+            if (string.IsNullOrEmpty(email))
+                return Unauthorized(new { message = "Chưa đăng nhập" });
+
+            var user  = db.Customers.FirstOrDefault(c=>c.Email == email);
+            if (user == null)
+                return NotFound(new { message = "Không tìm thấy tài khoản" });
+
+            return Ok(new
+            {
+                id = user.Id,
+                name = user.Name,
+                email = user.Email,
+                phone = user.Phone,
+                address = user.Address
+            });
+        }
+
+        //Put
+        [HttpPut]
+        public IActionResult UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            string email = HttpContext.Session.GetString("customer_user_email");
+            if (string.IsNullOrEmpty(email))
+                return Unauthorized(new { message = "Chưa đăng nhập" });
+
+            var user = db.Customers.FirstOrDefault(c => c.Email == email);
+            if (user == null)
+                return NotFound(new { message = "Không tìm thấy tài khoản" });
+
+            user.Name = request.Name;
+            user.Phone = request.Phone;
+            user.Address = request.Address;
+            db.SaveChanges();
+
+            return Ok(new { message = "Cập nhập thành công" });
+        }
+        public class UpdateProfileRequest
+        {
+            public string Name { get; set; }
+            public string Phone { get; set; }
+            public string Address{ get; set; }
+        }
+
     }
 }

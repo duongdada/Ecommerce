@@ -1,0 +1,123 @@
+﻿@{
+    Layout = "~/Views/Shared/LayoutTrangChu.cshtml";
+    ViewBag.Title = "Thông tin tài khoản";
+}
+
+<section style="padding: 80px 0; background: #fafafa; min-height: 60vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div style="background:#fff; padding:40px; border:1px solid #f0f0f0;">
+
+                    <h2 style="font-size:24px; font-weight:300; letter-spacing:3px; text-transform:uppercase; margin-bottom:30px; text-align:center;">
+                        Thông tin tài khoản
+                    </h2>
+
+                    <!-- Loading -->
+                    <div id="loadingState" style="text-align:center; padding:20px; color:#999;">
+                        <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                    </div>
+
+                    <!-- Form -->
+                    <div id="profileForm" style="display:none;">
+                        <div style="margin-bottom:20px;">
+                            <label style="font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600; display:block;">Họ tên</label>
+                            <input type="text" id="name" style="width:100%; padding:12px; border:1px solid #eee; margin-top:8px; font-size:14px; outline:none; box-sizing:border-box;">
+                        </div>
+
+                        <div style="margin-bottom:20px;">
+                            <label style="font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600; display:block;">Email</label>
+                            <input type="text" id="email" style="width:100%; padding:12px; border:1px solid #eee; margin-top:8px; font-size:14px; background:#f5f5f5; outline:none; box-sizing:border-box;" readonly>
+                            <small style="font-size:11px; color:#999;">Email không thể thay đổi</small>
+                        </div>
+
+                        <div style="margin-bottom:20px;">
+                            <label style="font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600; display:block;">Số điện thoại</label>
+                            <input type="text" id="phone" style="width:100%; padding:12px; border:1px solid #eee; margin-top:8px; font-size:14px; outline:none; box-sizing:border-box;">
+                        </div>
+
+                        <div style="margin-bottom:30px;">
+                            <label style="font-size:12px; letter-spacing:1px; text-transform:uppercase; font-weight:600; display:block;">Địa chỉ</label>
+                            <input type="text" id="address" style="width:100%; padding:12px; border:1px solid #eee; margin-top:8px; font-size:14px; outline:none; box-sizing:border-box;">
+                        </div>
+
+                        <!-- Thông báo -->
+                        <div id="message" style="display:none; padding:12px; margin-bottom:20px; text-align:center; font-size:14px; border-radius:3px;"></div>
+
+                        <button onclick="updateProfile()" id="btnUpdate"
+                                style="width:100%; padding:15px; background:#000; color:#fff; border:none; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition: background 0.3s;">
+                            Cập nhật thông tin
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Load profile khi trang load
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/Account/GetProfile')
+            .then(res => {
+                if (res.status === 401) {
+                    window.location.href = '/Account/Login';
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data) return;
+                document.getElementById('name').value = data.name ?? '';
+                document.getElementById('email').value = data.email ?? '';
+                document.getElementById('phone').value = data.phone ?? '';
+                document.getElementById('address').value = data.address ?? '';
+
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('profileForm').style.display = 'block';
+            })
+            .catch(() => {
+                window.location.href = '/Account/Login';
+            });
+    });
+
+    // Cập nhật profile
+    function updateProfile() {
+        const btn = document.getElementById('btnUpdate');
+        btn.textContent = 'Đang cập nhật...';
+        btn.disabled = true;
+
+        const data = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            address: document.getElementById('address').value
+        };
+
+        fetch('/Account/UpdateProfile', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(data => {
+            showMessage(data.message, 'success');
+        })
+        .catch(() => {
+            showMessage('Có lỗi xảy ra, vui lòng thử lại!', 'error');
+        })
+        .finally(() => {
+            btn.textContent = 'Cập nhật thông tin';
+            btn.disabled = false;
+        });
+    }
+
+    function showMessage(msg, type) {
+        const el = document.getElementById('message');
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.style.background = type === 'success' ? '#d4edda' : '#f8d7da';
+        el.style.color = type === 'success' ? '#155724' : '#721c24';
+        setTimeout(() => el.style.display = 'none', 3000);
+    }
+</script>
