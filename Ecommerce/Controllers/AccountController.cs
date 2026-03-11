@@ -444,7 +444,7 @@ namespace Ecommerce.Controllers
 
             return Ok(new { message = "Cập nhập thành công" });
         }
-        public class UpdateProfileRequest
+        public class UpdateProfileRequest   
         {
             public string Name { get; set; }
             public string Phone { get; set; }
