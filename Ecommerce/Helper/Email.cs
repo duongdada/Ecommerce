@@ -9,8 +9,8 @@ namespace E_Commerce.Helper
         // Cấu hình Gmail SMTP
         private static string SmtpHost = "smtp.gmail.com";
         private static int SmtpPort = 587;
-        private static string SenderEmail = "anhlavodoivt123@gmail.com";
-        private static string SenderPassword = "yoij ldyz xefw hvar";
+        private static string SenderEmail = Environment.GetEnvironmentVariable("EMAIL_SENDER") ?? "";
+        private static string SenderPassword = Environment.GetEnvironmentVariable("EMAIL_PASSWORD") ?? "";
         private static string SenderName = "Elegance Shop";
 
         // Gửi email

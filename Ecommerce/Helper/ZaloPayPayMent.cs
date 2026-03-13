@@ -6,7 +6,7 @@ namespace E_Commerce.Helper
 {
     public class ZaloPayPayment
     {
-        // ⭐ ZALOPAY SANDBOX CREDENTIALS (Test - Miễn phí)
+        // Zalo test
         private static string appId = "2553";
         private static string key1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
         private static string key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
