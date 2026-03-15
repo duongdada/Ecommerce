@@ -33,7 +33,7 @@ namespace E_Commerce.Controllers
             }
 
             string orderCode = "";
-            string userIdStr = HttpContext.Session.GetString("customer_user_id");
+            string userIdStr = HttpContext.Session.GetString("customer_user_id"); 
 
             // ⭐ CHỈ TẠO ĐƠN HÀNG KHI THANH TOÁN COD
             // Với MoMo/ZaloPay → Tạo đơn hàng SAU KHI thanh toán thành công
